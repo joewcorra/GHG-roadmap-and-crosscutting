@@ -1,0 +1,285 @@
+--- 
+title: "Building a Modern U.S. GHG Inventory Data System"
+subtitle: "Maintaining Continuity, Embracing Opportunity"
+
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    theme: cosmo
+  pdf:
+    toc: true
+    colorlinks: true
+
+execute:
+  echo: false
+  warning: false
+---
+
+<style>
+.principle-card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  border-top: 4px solid;
+}
+
+.principle-card.blue { border-top-color: #3b82f6; }
+.principle-card.green { border-top-color: #10b981; }
+.principle-card.purple { border-top-color: #8b5cf6; }
+.principle-card.orange { border-top-color: #f59e0b; }
+
+.principle-title {
+  font-size: 1.3em;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 5px;
+}
+
+.principle-subtitle {
+  font-size: 0.9em;
+  font-style: italic;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.phase-box {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.phase-label {
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 20px;
+  margin-right: 15px;
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+
+.phase-label.blue { background: #dbeafe; color: #1e40af; }
+.phase-label.green { background: #d1fae5; color: #065f46; }
+.phase-label.purple { background: #e9d5ff; color: #6b21a8; }
+.phase-label.orange { background: #fed7aa; color: #92400e; }
+
+.success-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.success-box {
+  background: linear-gradient(135deg, #3b82f6, #10b981);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.success-title {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 8px;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.tech-box {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.tech-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 15px;
+}
+
+.check-item {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.check-item::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
+}
+
+.arrow-item {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.arrow-item::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #3b82f6;
+  font-weight: bold;
+}
+
+@media print {
+  .principle-card, .tech-box {
+    break-inside: avoid;
+  }
+}
+</style>
+
+## Our Challenge and Opportunity
+
+With the discontinuation of the official EPA inventory compilation, we face the challenge of maintaining continuity in U.S. emissions tracking while seizing the opportunity to rebuild our system using modern practices that can serve the climate community for decades.
+
+As your data system developer, my role is to create infrastructure that empowers each sector lead to do their best work while ensuring the overall inventory is coherent, defensible, and maintainable.
+
+## Four Guiding Principles
+
+:::: {.two-column}
+
+::: {.principle-card .blue}
+<div class="principle-title">🡆 Simplicity First</div>
+<div class="principle-subtitle">Minimize Complexity, Maximize Utility</div>
+Adopt only solutions that make compilation easier, faster, more accurate, or more transparent. Every tool must answer: *Does this directly serve our mission?*
+:::
+
+::: {.principle-card .green}
+<div class="principle-title">👥 User-Centered Design</div>
+<div class="principle-subtitle">Learn from the Experts</div>
+Built **for you**, not imposed **on you**. Your domain expertise in your sectors guides all technical implementation decisions.
+:::
+
+::::
+
+:::: {.two-column}
+
+::: {.principle-card .purple}
+<div class="principle-title">🔄 Iterative Development</div>
+<div class="principle-subtitle">Build, Learn, Improve</div>
+Start minimal, deploy quickly, gather feedback continuously, and improve based on real-world use. Flexibility over perfection.
+:::
+
+::: {.principle-card .orange}
+<div class="principle-title">🛡️ Transparency & Reproducibility</div>
+<div class="principle-subtitle">Building Trust Through Openness</div>
+Every calculation documented and traceable. Credibility through radical transparency. Our methodology must be beyond reproach.
+:::
+
+::::
+
+## Development Roadmap
+
+::: {.phase-box}
+<span class="phase-label blue">Phase 1</span> **Discovery** (Weeks 1–4) — Meet with sector leads, document workflows, identify priorities
+:::
+
+::: {.phase-box}
+<span class="phase-label green">Phase 2</span> **MVP** (Months 2–4) — Build pilot sector, establish patterns, deliver working results
+:::
+
+::: {.phase-box}
+<span class="phase-label purple">Phase 3</span> **Expansion** (Months 5–12) — Extend to additional sectors, refine based on lessons learned
+:::
+
+::: {.phase-box}
+<span class="phase-label orange">Phase 4</span> **Operations** (Ongoing) — Maintain, improve, adapt, and ensure long-term sustainability
+:::
+
+## Technical Approach: Start Simple
+
+:::: {.two-column}
+
+::: {.tech-box}
+<div class="tech-title">🗄️ Our Foundation</div>
+<div class="check-item">**R + tidyverse** for calculations and analysis</div>
+<div class="check-item">**Organized CSVs** for transparent data storage</div>
+<div class="check-item">**Git** for version control and collaboration</div>
+<div class="check-item">**Clear documentation** for reproducibility</div>
+:::
+
+::: {.tech-box}
+<div class="tech-title">🎯 Why Simple Wins</div>
+<div class="arrow-item">Your data (100k–900k rows) doesn't need complex databases</div>
+<div class="arrow-item">Simple joins (2–4 tables) work great in R</div>
+<div class="arrow-item">CSVs are transparent and git-friendly</div>
+<div class="arrow-item">Add complexity only when simple becomes painful</div>
+:::
+
+::::
+
+**Key Insight:** We're optimizing for maintainability and transparency, not technological sophistication. Modern R handles your data volumes easily, and CSV files ensure that anyone can inspect, verify, and trust our inputs.
+
+## Success Looks Like...
+
+::: {.success-grid}
+
+::: {.success-box}
+<div class="success-title">Efficiency</div>
+Compilation takes less time than before
+:::
+
+::: {.success-box}
+<div class="success-title">Transparency</div>
+Results are easier to explain and verify
+:::
+
+::: {.success-box}
+<div class="success-title">Adaptability</div>
+Quick response to data revisions
+:::
+
+::: {.success-box}
+<div class="success-title">Accessibility</div>
+New members get up to speed quickly
+:::
+
+::: {.success-box}
+<div class="success-title">Empowerment</div>
+System serves the team, not constrains it
+:::
+
+::: {.success-box}
+<div class="success-title">Credibility</div>
+External stakeholders trust our outputs
+:::
+
+:::
+
+## What I Need From You
+
+- **Your time** for initial discovery conversations (1–2 hours per sector lead)
+- **Your honesty** about what works and what doesn't in your current workflow
+- **Your patience** as we iterate toward better solutions
+- **Your feedback** when something isn't working as expected
+- **Your ideas** about what would make your work easier
+
+## What You Can Expect From Me
+
+- **Responsiveness** to your needs and concerns
+- **Transparency** about technical decisions and tradeoffs
+- **Documentation** so the system is never a black box
+- **Training** to ensure everyone can use the tools effectively
+- **Flexibility** to adapt as we learn what works
+- **Accountability** for delivering a system that actually helps
+
+::: {style="text-align: center; font-size: 1.2em; font-style: italic; color: #4b5563; margin-top: 40px; padding: 20px; background: #f3f4f6; border-radius: 8px;"}
+*"The system serves you. Your expertise in your sector guides the technology."*
+:::
