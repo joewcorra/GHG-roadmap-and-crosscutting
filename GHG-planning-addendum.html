@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Technical Implementation Addendum</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="GHG-planning-addendum_files/libs/clipboard/clipboard.min.js"></script>
+<script src="GHG-planning-addendum_files/libs/quarto-html/quarto.js"></script>
+<script src="GHG-planning-addendum_files/libs/quarto-html/popper.min.js"></script>
+<script src="GHG-planning-addendum_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="GHG-planning-addendum_files/libs/quarto-html/anchor.min.js"></script>
+<link href="GHG-planning-addendum_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="GHG-planning-addendum_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="GHG-planning-addendum_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="GHG-planning-addendum_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="GHG-planning-addendum_files/libs/bootstrap/bootstrap-32162a2fca7cb0439643f2faaab1edf3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#github-repository-architecture" id="toc-github-repository-architecture" class="nav-link active" data-scroll-target="#github-repository-architecture">GitHub Repository Architecture</a>
+  <ul class="collapse">
+  <li><a href="#organizational-structure" id="toc-organizational-structure" class="nav-link" data-scroll-target="#organizational-structure">Organizational Structure</a></li>
+  <li><a href="#repository-template-structure" id="toc-repository-template-structure" class="nav-link" data-scroll-target="#repository-template-structure">Repository Template Structure</a></li>
+  <li><a href="#the-ghg-core-repository" id="toc-the-ghg-core-repository" class="nav-link" data-scroll-target="#the-ghg-core-repository">The <code>ghg-core</code> Repository</a></li>
+  <li><a href="#github-project-board" id="toc-github-project-board" class="nav-link" data-scroll-target="#github-project-board">GitHub Project Board</a></li>
+  </ul></li>
+  <li><a href="#r-package-ecosystem" id="toc-r-package-ecosystem" class="nav-link" data-scroll-target="#r-package-ecosystem">R Package Ecosystem</a>
+  <ul class="collapse">
+  <li><a href="#core-packages" id="toc-core-packages" class="nav-link" data-scroll-target="#core-packages">Core Packages</a></li>
+  <li><a href="#the-syrinx-package" id="toc-the-syrinx-package" class="nav-link" data-scroll-target="#the-syrinx-package">The <code>syrinx</code> Package</a></li>
+  <li><a href="#package-management-strategy" id="toc-package-management-strategy" class="nav-link" data-scroll-target="#package-management-strategy">Package Management Strategy</a></li>
+  </ul></li>
+  <li><a href="#future-decision-points" id="toc-future-decision-points" class="nav-link" data-scroll-target="#future-decision-points">Future Decision Points</a>
+  <ul class="collapse">
+  <li><a href="#phase-1-decisions-months-0-6" id="toc-phase-1-decisions-months-0-6" class="nav-link" data-scroll-target="#phase-1-decisions-months-0-6">Phase 1 Decisions (Months 0-6)</a></li>
+  <li><a href="#phase-2-decisions-months-6-12" id="toc-phase-2-decisions-months-6-12" class="nav-link" data-scroll-target="#phase-2-decisions-months-6-12">Phase 2 Decisions (Months 6-12)</a></li>
+  <li><a href="#phase-3-decisions-year-2" id="toc-phase-3-decisions-year-2" class="nav-link" data-scroll-target="#phase-3-decisions-year-2">Phase 3+ Decisions (Year 2+)</a></li>
+  </ul></li>
+  <li><a href="#decision-making-framework" id="toc-decision-making-framework" class="nav-link" data-scroll-target="#decision-making-framework">Decision-Making Framework</a>
+  <ul class="collapse">
+  <li><a href="#when-to-add-complexity" id="toc-when-to-add-complexity" class="nav-link" data-scroll-target="#when-to-add-complexity">When to Add Complexity</a></li>
+  <li><a href="#decision-authority" id="toc-decision-authority" class="nav-link" data-scroll-target="#decision-authority">Decision Authority</a></li>
+  </ul></li>
+  <li><a href="#review-milestones" id="toc-review-milestones" class="nav-link" data-scroll-target="#review-milestones">Review Milestones</a></li>
+  <li><a href="#appendix-key-package-documentation" id="toc-appendix-key-package-documentation" class="nav-link" data-scroll-target="#appendix-key-package-documentation">Appendix: Key Package Documentation</a>
+  <ul class="collapse">
+  <li><a href="#essential-reading" id="toc-essential-reading" class="nav-link" data-scroll-target="#essential-reading">Essential Reading</a></li>
+  <li><a href="#internal-documentation" id="toc-internal-documentation" class="nav-link" data-scroll-target="#internal-documentation">Internal Documentation</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="GHG-planning-addendum.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Technical Implementation Addendum</h1>
+<p class="subtitle lead">GitHub Architecture, R Package Ecosystem, and Future Decision Points</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="github-repository-architecture" class="level2">
+<h2 class="anchored" data-anchor-id="github-repository-architecture">GitHub Repository Architecture</h2>
+<section id="organizational-structure" class="level3">
+<h3 class="anchored" data-anchor-id="organizational-structure">Organizational Structure</h3>
+<p>We will use a <strong>modular repository structure</strong> with separate repos for each major GHG source category, coordinated through an overarching GitHub Project board.</p>
+<section id="repository-structure" class="level4">
+<h4 class="anchored" data-anchor-id="repository-structure">Repository Structure</h4>
+<pre><code>github.com/your-org/
+├── ghg-inventory-project/ # GitHub Project (Kanban board)
+├── ghg-energy/ # IPCC Category 1: Energy
+├── ghg-ippu/ # IPCC Category 2: Industrial Processes
+├── ghg-agriculture/ # IPCC Category 3: Agriculture
+├── ghg-lulucf/ # IPCC Category 4: Land Use
+├── ghg-waste/ # IPCC Category 5: Waste
+├── ghg-core/ # Shared utilities &amp; documentation
+└── syrinx/ # Internal data harmonization package</code></pre>
+</section>
+<section id="rationale-for-multi-repo-approach" class="level4">
+<h4 class="anchored" data-anchor-id="rationale-for-multi-repo-approach">Rationale for Multi-Repo Approach</h4>
+<p><strong>Advantages:</strong> - <strong>Sector independence</strong>: Teams can work without conflicts - <strong>Clear ownership</strong>: Each sector lead owns their repository - <strong>Focused permissions</strong>: Control access by sector - <strong>Separate release cycles</strong>: Update sectors independently - <strong>Smaller codebases</strong>: Easier to understand and maintain - <strong>Specific issues/PRs</strong>: Sector-specific discussions stay organized</p>
+<p><strong>Coordination via GitHub Project:</strong> - Cross-repo task tracking - Unified timeline and milestones - Dependencies between sectors visible - Overall inventory status dashboard</p>
+</section>
+</section>
+<section id="repository-template-structure" class="level3">
+<h3 class="anchored" data-anchor-id="repository-template-structure">Repository Template Structure</h3>
+<p>Each sector repository follows a consistent structure:</p>
+<pre><code>ghg-energy/
+├── README.md # Sector overview &amp; quick start
+├── METHODOLOGY.md # Detailed methodology documentation
+├── data/
+│ ├── reference/ # Emission factors, lookups
+│ │ ├── emission_factors.csv
+│ │ ├── gwp_values.csv
+│ │ └── fuel_classifications.csv
+│ ├── activity/ # Processed activity data (git-ignored if large)
+│ └── calculated/ # Results (date-stamped)
+├── data-raw/ # Original downloads (git-ignored)
+├── R/
+│ ├── 01_download.R # Data acquisition scripts
+│ ├── 02_clean.R # Data cleaning and harmonization
+│ ├── 03_calculate.R # Emission calculations
+│ ├── 04_validate.R # QA/QC checks
+│ └── functions/ # Helper functions
+│ ├── load_data.R
+│ ├── calculations.R
+│ └── validation.R
+├── tests/
+│ ├── testthat/ # Unit tests
+│ └── test_calculations.R
+├── outputs/
+│ ├── reports/ # Generated reports
+│ └── figures/ # Plots and visualizations
+├── docs/ # Additional documentation
+│ ├── data_dictionary.md
+│ └── changelog.md
+├── .github/
+│ ├── workflows/ # GitHub Actions (CI/CD)
+│ │ └── run_tests.yml
+│ └── ISSUE_TEMPLATE/
+├── renv.lock # R package dependencies
+└── _targets.R # Targets workflow (optional)</code></pre>
+</section>
+<section id="the-ghg-core-repository" class="level3">
+<h3 class="anchored" data-anchor-id="the-ghg-core-repository">The <code>ghg-core</code> Repository</h3>
+<p>Central repository for shared resources:</p>
+<pre><code>ghg-core/
+├── README.md
+├── reference_data/ # Cross-sector reference data
+│ ├── ipcc_categories.csv # Complete IPCC hierarchy
+│ ├── gwp_ar5.csv # Global warming potentials
+│ ├── gwp_ar6.csv
+│ ├── state_codes.csv
+│ └── region_mappings.csv
+├── templates/ # Templates for sector repos
+│ ├── repo_template/
+│ └── script_templates/
+├── documentation/
+│ ├── methodology_standards.md # Cross-sector standards
+│ ├── qaqc_procedures.md
+│ ├── naming_conventions.md
+│ └── git_workflow.md
+├── R/
+│ └── shared_functions/ # Functions used across sectors
+└── tests/</code></pre>
+</section>
+<section id="github-project-board" class="level3">
+<h3 class="anchored" data-anchor-id="github-project-board">GitHub Project Board</h3>
+<p><strong>Project Name:</strong> U.S. GHG Inventory Development</p>
+<p><strong>Board Structure:</strong></p>
+<pre><code>Columns:
+├── Backlog # Future work
+├── Ready # Prioritized and scoped
+├── In Progress # Active development
+├── Review # Code review / validation
+├── Done # Completed this sprint
+└── Blocked # Waiting on dependencies</code></pre>
+<p><strong>Issue Labels (cross-repo):</strong> - <code>sector:energy</code>, <code>sector:agriculture</code>, etc. - <code>priority:high</code>, <code>priority:medium</code>, <code>priority:low</code> - <code>type:bug</code>, <code>type:feature</code>, <code>type:documentation</code> - <code>status:blocked</code>, <code>status:needs-review</code> - <code>phase:discovery</code>, <code>phase:mvp</code>, <code>phase:expansion</code></p>
+<hr>
+</section>
+</section>
+<section id="r-package-ecosystem" class="level2">
+<h2 class="anchored" data-anchor-id="r-package-ecosystem">R Package Ecosystem</h2>
+<section id="core-packages" class="level3">
+<h3 class="anchored" data-anchor-id="core-packages">Core Packages</h3>
+<section id="data-management-manipulation" class="level4">
+<h4 class="anchored" data-anchor-id="data-management-manipulation">Data Management &amp; Manipulation</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Essential tidyverse</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># Data manipulation, visualization</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr) <span class="co"># Fast CSV reading</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl) <span class="co"># Excel file import</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor) <span class="co"># Data cleaning utilities</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Our custom package</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(syrinx) <span class="co"># Internal data harmonization</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="workflow-reproducibility" class="level4">
+<h4 class="anchored" data-anchor-id="workflow-reproducibility">Workflow &amp; Reproducibility</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here) <span class="co"># Path management</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(targets) <span class="co"># Workflow orchestration (optional Phase 2)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(renv) <span class="co"># Dependency management</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(usethis) <span class="co"># Development utilities</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="quality-assurance" class="level4">
+<h4 class="anchored" data-anchor-id="quality-assurance">Quality Assurance</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(testthat) <span class="co"># Unit testing</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pointblank) <span class="co"># Data validation</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(assertr) <span class="co"># Data quality checks</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(validate) <span class="co"># Rule-based validation</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="documentation-reporting" class="level4">
+<h4 class="anchored" data-anchor-id="documentation-reporting">Documentation &amp; Reporting</h4>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(quarto) <span class="co"># Document generation</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr) <span class="co"># Report generation</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra) <span class="co"># Table formatting</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt) <span class="co"># Publication-ready tables</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="visualization" class="level4">
+<h4 class="anchored" data-anchor-id="visualization">Visualization</h4>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2) <span class="co"># Core plotting</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork) <span class="co"># Compose multiple plots</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales) <span class="co"># Scale functions</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly) <span class="co"># Interactive plots (optional)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="spatial-data-for-lulucf" class="level4">
+<h4 class="anchored" data-anchor-id="spatial-data-for-lulucf">Spatial Data (for LULUCF)</h4>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf) <span class="co"># Spatial data handling</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra) <span class="co"># Raster data</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mapview) <span class="co"># Interactive maps</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="database-future-phase" class="level4">
+<h4 class="anchored" data-anchor-id="database-future-phase">Database (Future Phase)</h4>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DBI) <span class="co"># Database interface</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(duckdb) <span class="co"># DuckDB connection (when needed)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="the-syrinx-package" class="level3">
+<h3 class="anchored" data-anchor-id="the-syrinx-package">The <code>syrinx</code> Package</h3>
+<p><strong>Purpose:</strong> Internal package for standardizing data cleaning and harmonization across all sectors.</p>
+<p><strong>Key Functions:</strong></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data harmonization</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">harmonize_columns</span>() <span class="co"># Standardize column names</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">harmonize_units</span>() <span class="co"># Convert to standard units</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">harmonize_dates</span>() <span class="co"># Standardize date formats</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">harmonize_locations</span>() <span class="co"># Standardize state/region codes</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Data validation</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">validate_schema</span>() <span class="co"># Check expected columns/types</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">validate_ranges</span>() <span class="co"># Check value ranges</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">validate_references</span>() <span class="co"># Check referential integrity</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Common transformations</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">aggregate_temporal</span>() <span class="co"># Aggregate to different time periods</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">aggregate_spatial</span>() <span class="co"># Aggregate to different regions</span></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">fill_gaps</span>() <span class="co"># Handle missing data</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Emission calculations</span></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">calculate_co2e</span>() <span class="co"># Convert to CO2-equivalent</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">apply_emission_factor</span>() <span class="co"># Standard EF application</span></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>syrinx<span class="sc">::</span><span class="fu">uncertainty_bounds</span>() <span class="co"># Calculate uncertainty ranges</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Package Structure:</strong></p>
+<pre><code>syrinx/
+├── DESCRIPTION
+├── NAMESPACE
+├── R/
+│ ├── harmonize.R
+│ ├── validate.R
+│ ├── transform.R
+│ ├── calculate.R
+│ └── utils.R
+├── data/ # Built-in reference data
+│ ├── standard_units.rda
+│ └── standard_columns.rda
+├── tests/
+│ └── testthat/
+├── man/ # Documentation
+├── vignettes/ # Usage examples
+│ ├── getting_started.Rmd
+│ └── validation_guide.Rmd
+└── README.md</code></pre>
+<p><strong>Installation:</strong></p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From internal repository</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"your-org/syrinx"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Or if using private GitHub</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"your-org/syrinx"</span>, </span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">auth_token =</span> <span class="fu">Sys.getenv</span>(<span class="st">"GITHUB_PAT"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="package-management-strategy" class="level3">
+<h3 class="anchored" data-anchor-id="package-management-strategy">Package Management Strategy</h3>
+<p><strong>Using <code>renv</code> for Reproducibility:</strong></p>
+<p>Each sector repository includes <code>renv.lock</code> to freeze package versions:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize renv in a new sector repo</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">init</span>()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Install packages</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"tidyverse"</span>, <span class="st">"here"</span>, <span class="st">"testthat"</span>))</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"your-org/syrinx"</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Snapshot current state</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">snapshot</span>()</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Others can restore exact environment</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>renv<span class="sc">::</span><span class="fu">restore</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<hr>
+</section>
+</section>
+<section id="future-decision-points" class="level2">
+<h2 class="anchored" data-anchor-id="future-decision-points">Future Decision Points</h2>
+<section id="phase-1-decisions-months-0-6" class="level3">
+<h3 class="anchored" data-anchor-id="phase-1-decisions-months-0-6">Phase 1 Decisions (Months 0-6)</h3>
+<section id="workflow-orchestration-targets-vs-scripts" class="level4">
+<h4 class="anchored" data-anchor-id="workflow-orchestration-targets-vs-scripts">1.1 Workflow Orchestration: {targets} vs Scripts</h4>
+<p><strong>Decision:</strong> Whether to implement <code>{targets}</code> pipeline management</p>
+<p><strong>Current Approach:</strong> Sequential R scripts (01_download.R, 02_clean.R, etc.)</p>
+<p><strong>Consider {targets} when:</strong> - Scripts become complex with many interdependencies - Rebuilding everything is taking too long - Need fine-grained caching of intermediate results - Multiple people running overlapping analyses</p>
+<p><strong>Evaluation Criteria:</strong> - Is manual script execution becoming error-prone? - Are we re-running expensive calculations unnecessarily? - Would the learning curve justify the benefits?</p>
+<p><strong>Timeline:</strong> Re-evaluate after MVP (Month 4)</p>
+<hr>
+</section>
+<section id="testing-strategy-depth-vs-speed" class="level4">
+<h4 class="anchored" data-anchor-id="testing-strategy-depth-vs-speed">1.2 Testing Strategy: Depth vs Speed</h4>
+<p><strong>Decision:</strong> How comprehensive should automated testing be?</p>
+<p><strong>Current Approach:</strong> Basic unit tests for calculation functions</p>
+<p><strong>Options:</strong> - <strong>Minimal:</strong> Test core calculations only - <strong>Moderate:</strong> Add data validation tests - <strong>Comprehensive:</strong> Include integration tests, benchmark tests</p>
+<p><strong>Consider expansion when:</strong> - Bugs are discovered in production - Onboarding new team members who break things - Preparing for external review</p>
+<p><strong>Timeline:</strong> Decide by Month 3 based on bug frequency</p>
+<hr>
+</section>
+</section>
+<section id="phase-2-decisions-months-6-12" class="level3">
+<h3 class="anchored" data-anchor-id="phase-2-decisions-months-6-12">Phase 2 Decisions (Months 6-12)</h3>
+<section id="database-implementation-duckdb" class="level4">
+<h4 class="anchored" data-anchor-id="database-implementation-duckdb">2.1 Database Implementation: DuckDB</h4>
+<p><strong>Decision:</strong> When/whether to migrate from CSVs to DuckDB</p>
+<p><strong>Current Approach:</strong> Well-organized CSV files</p>
+<p><strong>Triggers for migration:</strong> - ✓ Query performance becomes problematic (joins taking &gt;1 minute) - ✓ File management becomes unwieldy (&gt;100 CSV files) - ✓ Need for referential integrity is critical - ✓ Team size grows (&gt;5 active users) - ✓ Complex analytical queries are frequent</p>
+<p><strong>Migration Path:</strong></p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Phase 1: Read CSVs (current)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/activity/electricity.csv"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Phase 2: Add DuckDB option</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(duckdb<span class="sc">::</span><span class="fu">duckdb</span>(), <span class="st">"ghg_inventory.duckdb"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">dbReadTable</span>(con, <span class="st">"electricity"</span>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Functions remain unchanged</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">calculate_emissions</span>(data, emission_factors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p><strong>Implementation Steps:</strong> 1. Pilot DuckDB with one sector 2. Benchmark performance vs CSVs 3. Evaluate team comfort level 4. Decide to expand or revert</p>
+<p><strong>Timeline:</strong> Evaluate Month 8, implement Month 9-10 if approved</p>
+<hr>
+</section>
+<section id="centralized-data-acquisition-hub" class="level4">
+<h4 class="anchored" data-anchor-id="centralized-data-acquisition-hub">2.2 Centralized Data Acquisition Hub</h4>
+<p><strong>Decision:</strong> Build automated data download/update system</p>
+<p><strong>Current Approach:</strong> Manual downloads, sector-by-sector</p>
+<p><strong>Future Vision:</strong></p>
+<pre><code>ghg-data-hub/
+├── R/
+│ ├── download_eia.R # EIA API wrapper
+│ ├── download_epa.R # EPA GHGRP
+│ ├── download_usda.R # USDA NASS
+│ └── schedule_updates.R # Automated scheduling
+├── data/
+│ ├── raw/ # Downloaded files
+│ └── metadata/ # Download logs
+└── logs/
+    └── download_log.csv # Audit trail</code></pre>
+<p><strong>Features:</strong> - Centralized data source definitions - Automated update checks - Version control of raw data - Notification system for new data - Consistent metadata tracking</p>
+<p><strong>Triggers for implementation:</strong> - ✓ Manual downloads becoming bottleneck - ✓ Missing data updates causing delays - ✓ Multiple sectors using same data sources - ✓ Need for systematic data versioning</p>
+<p><strong>Dependencies:</strong> - API access established with agencies - Data source landscape well-understood - Team agreement on update frequency</p>
+<p><strong>Timeline:</strong> Design Month 7, pilot Month 10-12</p>
+<hr>
+</section>
+<section id="web-based-data-portal" class="level4">
+<h4 class="anchored" data-anchor-id="web-based-data-portal">2.3 Web-Based Data Portal</h4>
+<p><strong>Decision:</strong> Create public-facing data access system</p>
+<p><strong>Options:</strong> - <strong>Shiny Dashboard:</strong> Interactive exploration - <strong>API:</strong> Programmatic access - <strong>Static Website:</strong> Documentation + download links - <strong>All of the above:</strong> Comprehensive platform</p>
+<p><strong>Consider when:</strong> - Inventory is stable and validated - External users requesting data access - Need to demonstrate transparency - Ready for public scrutiny</p>
+<p><strong>Timeline:</strong> Not before Month 12 (Phase 3+)</p>
+<hr>
+</section>
+</section>
+<section id="phase-3-decisions-year-2" class="level3">
+<h3 class="anchored" data-anchor-id="phase-3-decisions-year-2">Phase 3+ Decisions (Year 2+)</h3>
+<section id="advanced-uncertainty-quantification" class="level4">
+<h4 class="anchored" data-anchor-id="advanced-uncertainty-quantification">3.1 Advanced Uncertainty Quantification</h4>
+<p><strong>Decision:</strong> Implement Monte Carlo simulation</p>
+<p><strong>Current Approach:</strong> Use published uncertainty ranges from EPA</p>
+<p><strong>Enhanced Approach:</strong> - Probability distributions for emission factors - Correlation structures between parameters - Propagation through calculations - Full uncertainty analysis per IPCC guidelines</p>
+<p><strong>Package:</strong> <code>{mc2d}</code> or <code>{propagate}</code></p>
+<p><strong>Triggers:</strong> - Required for peer review or publication - IPCC reporting requirements - Stakeholder requests for uncertainty bounds</p>
+<!-- --- -->
+<!-- #### 3.2 Real-Time / Near-Real-Time Estimates -->
+<!-- **Decision:** Develop nowcasting capabilities -->
+<!-- **Concept:** Provide preliminary estimates with shorter lag -->
+<!-- **Requirements:** -->
+<!-- - Relationship models between early indicators and final data -->
+<!-- - Automated data pipelines -->
+<!-- - Uncertainty quantification for estimates -->
+<!-- - Clear labeling as preliminary -->
+<!-- **Use Cases:** -->
+<!-- - Quarterly estimates while waiting for annual data -->
+<!-- - Early warning for trend changes -->
+<!-- - Policy-relevant rapid response -->
+<!-- **Complexity:** High - requires modeling expertise -->
+<!-- --- -->
+<!-- #### 3.3 Scenario Analysis Tools -->
+<!-- **Decision:** Build capability for "what if" scenarios -->
+<!-- **Examples:** -->
+<!-- - "What if coal retirements accelerate?" -->
+<!-- - "What if methane regulations tighten?" -->
+<!-- - "What if agricultural practices shift?" -->
+<!-- **Implementation:** -->
+<!-- ```r -->
+<!-- # Scenario framework -->
+<!-- run_scenario <- function(baseline_data,  -->
+<!--                         scenario_params, -->
+<!--                         years = 2025:2030) { -->
+<!--   # Apply scenario assumptions -->
+<!--   # Calculate emissions -->
+<!--   # Compare to baseline -->
+<!-- } -->
+<!-- ``` -->
+<!-- **Triggers:** -->
+<!-- - Policy analysis requests -->
+<!-- - Research collaborations -->
+<!-- - Stakeholder engagement -->
+<!-- --- -->
+</section>
+</section>
+</section>
+<section id="decision-making-framework" class="level2">
+<h2 class="anchored" data-anchor-id="decision-making-framework">Decision-Making Framework</h2>
+<section id="when-to-add-complexity" class="level3">
+<h3 class="anchored" data-anchor-id="when-to-add-complexity">When to Add Complexity</h3>
+<p><strong>Ask these questions:</strong></p>
+<ol type="1">
+<li><strong>Does the current simple approach actually cause pain?</strong>
+<ul>
+<li>If no → Don’t add complexity</li>
+<li>If yes → Continue evaluation</li>
+</ul></li>
+<li><strong>What’s the cost of the status quo?</strong>
+<ul>
+<li>Time wasted?</li>
+<li>Errors introduced?</li>
+<li>Opportunities missed?</li>
+</ul></li>
+<li><strong>What’s the cost of the new approach?</strong>
+<ul>
+<li>Learning curve?</li>
+<li>Maintenance burden?</li>
+<li>Technical debt?</li>
+</ul></li>
+<li><strong>Who benefits and how much?</strong>
+<ul>
+<li>Entire team or one person?</li>
+<li>Daily impact or occasional?</li>
+<li>Critical or nice-to-have?</li>
+</ul></li>
+<li><strong>Is it reversible?</strong>
+<ul>
+<li>Can we go back if it doesn’t work?</li>
+<li>What’s locked in?</li>
+</ul></li>
+<li><strong>Do we have capacity?</strong>
+<ul>
+<li>Time to implement properly?</li>
+<li>Skills on the team?</li>
+<li>Bandwidth to maintain?</li>
+</ul></li>
+</ol>
+</section>
+<section id="decision-authority" class="level3">
+<h3 class="anchored" data-anchor-id="decision-authority">Decision Authority</h3>
+<p><strong>Tech decisions by data system developer:</strong> - R package choices - Code organization - Git workflow details - Development tools</p>
+<p><strong>Collaborative decisions:</strong> - Database implementation - Major workflow changes - Data access/sharing policies - Public-facing features</p>
+<p><strong>Sector lead decisions:</strong> - Sector-specific methodologies - Data source selections - QA/QC thresholds - Reporting priorities</p>
+<hr>
+</section>
+</section>
+<section id="review-milestones" class="level2">
+<h2 class="anchored" data-anchor-id="review-milestones">Review Milestones</h2>
+<p><strong>Month 3 Review:</strong> - Is CSV approach working? - Is <code>syrinx</code> package valuable? - Are GitHub repos effective? - Need to adjust course?</p>
+<p><strong>Month 6 Review:</strong> - Ready for DuckDB evaluation? - Need centralized data hub? - Testing strategy adequate? - Workflow orchestration needed?</p>
+<p><strong>Month 12 Review:</strong> - System meeting goals? - What future capabilities to prioritize? - Resource needs for Year 2? - External engagement strategy?</p>
+<hr>
+</section>
+<section id="appendix-key-package-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-key-package-documentation">Appendix: Key Package Documentation</h2>
+<section id="essential-reading" class="level3">
+<h3 class="anchored" data-anchor-id="essential-reading">Essential Reading</h3>
+<p><strong>{tidyverse}:</strong> https://www.tidyverse.org/<br>
+<strong>{targets}:</strong> https://books.ropensci.org/targets/<br>
+<strong>{renv}:</strong> https://rstudio.github.io/renv/<br>
+<strong>{testthat}:</strong> https://testthat.r-lib.org/<br>
+<strong>{pointblank}:</strong> https://rich-iannone.github.io/pointblank/<br>
+<strong>{DuckDB}:</strong> https://duckdb.org/docs/api/r<br>
+<strong>{quarto}:</strong> https://quarto.org/docs/computations/r.html</p>
+</section>
+<section id="internal-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="internal-documentation">Internal Documentation</h3>
+<p><strong>{syrinx} package:</strong> [Link to internal docs when available]<br>
+<strong>GitHub organization:</strong> [Your organization link]<br>
+<strong>Team wiki:</strong> [Link to wiki]</p>
+<hr>
+<p><em>This addendum is a living document and will be updated as decisions are made and the system evolves.</em></p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -158,13 +158,14 @@ As your data system developer, my role is to create infrastructure that empowers
 ::: {.principle-card .blue}
 <div class="principle-title">🡆 Simplicity First</div>
 <div class="principle-subtitle">Minimize Complexity, Maximize Utility</div>
-Adopt only solutions that make compilation easier, faster, more accurate, or more transparent. Every tool must answer: *Does this directly serve our mission?*
+Adopt only solutions that make compilation easier, faster, more accurate, or more transparent. Every new feature must answer: *Does this directly serve our mission?*
+
 :::
 
 ::: {.principle-card .green}
 <div class="principle-title">👥 User-Centered Design</div>
 <div class="principle-subtitle">Learn from the Experts</div>
-Built **for you**, not imposed **on you**. Your domain expertise in your sectors guides all technical implementation decisions.
+Built for you, not imposed on you. Your domain expertise will guide all technical implementation decisions. 
 :::
 
 ::::
@@ -174,13 +175,13 @@ Built **for you**, not imposed **on you**. Your domain expertise in your sectors
 ::: {.principle-card .purple}
 <div class="principle-title">🔄 Iterative Development</div>
 <div class="principle-subtitle">Build, Learn, Improve</div>
-Start minimal, deploy quickly, gather feedback continuously, and improve based on real-world use. Flexibility over perfection.
+Start minimal, deploy quickly, gather feedback continuously, and improve based on real-world use. 
 :::
 
 ::: {.principle-card .orange}
 <div class="principle-title">🛡️ Transparency & Reproducibility</div>
 <div class="principle-subtitle">Building Trust Through Openness</div>
-Every calculation documented and traceable. Credibility through radical transparency. Our methodology must be beyond reproach.
+Every step of data transformation, aggregation, and calculation will be documented and traceable.
 :::
 
 ::::
@@ -217,8 +218,8 @@ Every calculation documented and traceable. Credibility through radical transpar
 
 ::: {.tech-box}
 <div class="tech-title">🎯 Why Simple Wins</div>
-<div class="arrow-item">Your data (100k–900k rows) doesn't need complex databases</div>
-<div class="arrow-item">Simple joins (2–4 tables) work great in R</div>
+<div class="arrow-item">Your data doesn't need complex databases</div>
+<div class="arrow-item">Simple joins (2–4 tables) work great with R's tidyverse tools</div>
 <div class="arrow-item">CSVs are transparent and git-friendly</div>
 <div class="arrow-item">Add complexity only when simple becomes painful</div>
 :::
@@ -280,6 +281,4 @@ External stakeholders trust our outputs
 - **Flexibility** to adapt as we learn what works
 - **Accountability** for delivering a system that actually helps
 
-::: {style="text-align: center; font-size: 1.2em; font-style: italic; color: #4b5563; margin-top: 40px; padding: 20px; background: #f3f4f6; border-radius: 8px;"}
-*"The system serves you. Your expertise in your sector guides the technology."*
-:::
+
