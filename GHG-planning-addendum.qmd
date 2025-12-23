@@ -1,4 +1,4 @@
---- 
+---
 title: "Technical Implementation Addendum"
 subtitle: "GitHub Architecture, R Package Ecosystem, and Future Decision Points"
 format:
@@ -22,9 +22,9 @@ We will use a **modular repository structure** with separate repos for each majo
 
 #### Repository Structure
 
-```
+```         
 github.com/your-org/
-├── ghg-inventory-project/ # GitHub Project (Kanban board)
+├── ghg-inventory-project/ # GitHub Project
 ├── ghg-energy/ # IPCC Category 1: Energy
 ├── ghg-ippu/ # IPCC Category 2: Industrial Processes
 ├── ghg-agriculture/ # IPCC Category 3: Agriculture
@@ -36,25 +36,15 @@ github.com/your-org/
 
 #### Rationale for Multi-Repo Approach
 
-**Advantages:**
-- **Sector independence**: Teams can work without conflicts
-- **Clear ownership**: Each sector lead owns their repository
-- **Focused permissions**: Control access by sector
-- **Separate release cycles**: Update sectors independently
-- **Smaller codebases**: Easier to understand and maintain
-- **Specific issues/PRs**: Sector-specific discussions stay organized
+**Advantages:** - **Source independence**: Teams can work without conflicts - **Clear ownership**: Each source lead owns their repository - **Separate release cycles**: Update sources independently - **Smaller codebases**: Easier to understand and maintain - **Specific issues**: Source-specific discussions stay organized
 
-**Coordination via GitHub Project:**
-- Cross-repo task tracking
-- Unified timeline and milestones
-- Dependencies between sectors visible
-- Overall inventory status dashboard
+**Coordination via GitHub Project:** - Cross-repo task tracking - Unified timeline and milestones - Dependencies between sectors visible - Overall inventory status dashboard
 
 ### Repository Template Structure
 
 Each sector repository follows a consistent structure:
 
-```
+```         
 ghg-energy/
 ├── README.md # Sector overview & quick start
 ├── METHODOLOGY.md # Detailed methodology documentation
@@ -96,7 +86,7 @@ ghg-energy/
 
 Central repository for shared resources:
 
-```
+```         
 ghg-core/
 ├── README.md
 ├── reference_data/ # Cross-sector reference data
@@ -123,7 +113,8 @@ ghg-core/
 **Project Name:** U.S. GHG Inventory Development
 
 **Board Structure:**
-```
+
+```         
 Columns:
 ├── Backlog # Future work
 ├── Ready # Prioritized and scoped
@@ -133,33 +124,35 @@ Columns:
 └── Blocked # Waiting on dependencies
 ```
 
-**Issue Labels (cross-repo):**
-- `sector:energy`, `sector:agriculture`, etc.
-- `priority:high`, `priority:medium`, `priority:low`
-- `type:bug`, `type:feature`, `type:documentation`
-- `status:blocked`, `status:needs-review`
-- `phase:discovery`, `phase:mvp`, `phase:expansion`
+**Issue Labels (cross-repo):** - `sector:energy`, `sector:agriculture`, etc. - `priority:high`, `priority:medium`, `priority:low` - `type:bug`, `type:feature`, `type:documentation` - `status:blocked`, `status:needs-review` - `phase:discovery`, `phase:mvp`, `phase:expansion`
 
----
+------------------------------------------------------------------------
 
 ## R Package Ecosystem
 
 ### Core Packages
 
 #### Data Management & Manipulation
-```r
-# Essential tidyverse
+
+``` r
+# Key packages
 library(tidyverse) # Data manipulation, visualization
-library(readr) # Fast CSV reading
+library(ellmer) # Leverage LLMs via API
 library(readxl) # Excel file import
+library(targets) # Construct data pipelines
+library(gt) # Create custom tables
+library(quarto) # Create dynamic documents
+library(roxygen2) # Automated documentation
+library(jsonlite) # Read and create JSON files
 library(janitor) # Data cleaning utilities
 
 # Our custom package
-library(syrinx) # Internal data harmonization
+library(syrinx) # Internal data harmonization and data cleaning
 ```
 
 #### Workflow & Reproducibility
-```r
+
+``` r
 library(here) # Path management
 library(targets) # Workflow orchestration (optional Phase 2)
 library(renv) # Dependency management
@@ -167,7 +160,8 @@ library(usethis) # Development utilities
 ```
 
 #### Quality Assurance
-```r
+
+``` r
 library(testthat) # Unit testing
 library(pointblank) # Data validation
 library(assertr) # Data quality checks
@@ -175,7 +169,8 @@ library(validate) # Rule-based validation
 ```
 
 #### Documentation & Reporting
-```r
+
+``` r
 library(quarto) # Document generation
 library(knitr) # Report generation
 library(kableExtra) # Table formatting
@@ -183,7 +178,8 @@ library(gt) # Publication-ready tables
 ```
 
 #### Visualization
-```r
+
+``` r
 library(ggplot2) # Core plotting
 library(patchwork) # Compose multiple plots
 library(scales) # Scale functions
@@ -191,14 +187,16 @@ library(plotly) # Interactive plots (optional)
 ```
 
 #### Spatial Data (for LULUCF)
-```r
+
+``` r
 library(sf) # Spatial data handling
 library(terra) # Raster data
 library(mapview) # Interactive maps
 ```
 
 #### Database (Future Phase)
-```r
+
+``` r
 library(DBI) # Database interface
 library(duckdb) # DuckDB connection (when needed)
 ```
@@ -209,7 +207,7 @@ library(duckdb) # DuckDB connection (when needed)
 
 **Key Functions:**
 
-```r
+``` r
 # Data harmonization
 syrinx::harmonize_columns() # Standardize column names
 syrinx::harmonize_units() # Convert to standard units
@@ -233,7 +231,8 @@ syrinx::uncertainty_bounds() # Calculate uncertainty ranges
 ```
 
 **Package Structure:**
-```
+
+```         
 syrinx/
 ├── DESCRIPTION
 ├── NAMESPACE
@@ -256,7 +255,8 @@ syrinx/
 ```
 
 **Installation:**
-```r
+
+``` r
 # From internal repository
 remotes::install_github("your-org/syrinx")
 
@@ -271,7 +271,7 @@ remotes::install_github("your-org/syrinx",
 
 Each sector repository includes `renv.lock` to freeze package versions:
 
-```r
+``` r
 # Initialize renv in a new sector repo
 renv::init()
 
@@ -286,7 +286,7 @@ renv::snapshot()
 renv::restore()
 ```
 
----
+------------------------------------------------------------------------
 
 ## Future Decision Points
 
@@ -298,20 +298,13 @@ renv::restore()
 
 **Current Approach:** Sequential R scripts (01_download.R, 02_clean.R, etc.)
 
-**Consider {targets} when:**
-- Scripts become complex with many interdependencies
-- Rebuilding everything is taking too long
-- Need fine-grained caching of intermediate results
-- Multiple people running overlapping analyses
+**Consider {targets} when:** - Scripts become complex with many interdependencies - Rebuilding everything is taking too long - Need fine-grained caching of intermediate results - Multiple people running overlapping analyses
 
-**Evaluation Criteria:**
-- Is manual script execution becoming error-prone?
-- Are we re-running expensive calculations unnecessarily?
-- Would the learning curve justify the benefits?
+**Evaluation Criteria:** - Is manual script execution becoming error-prone? - Are we re-running expensive calculations unnecessarily? - Would the learning curve justify the benefits?
 
 **Timeline:** Re-evaluate after MVP (Month 4)
 
----
+------------------------------------------------------------------------
 
 #### 1.2 Testing Strategy: Depth vs Speed
 
@@ -319,19 +312,13 @@ renv::restore()
 
 **Current Approach:** Basic unit tests for calculation functions
 
-**Options:**
-- **Minimal:** Test core calculations only
-- **Moderate:** Add data validation tests
-- **Comprehensive:** Include integration tests, benchmark tests
+**Options:** - **Minimal:** Test core calculations only - **Moderate:** Add data validation tests - **Comprehensive:** Include integration tests, benchmark tests
 
-**Consider expansion when:**
-- Bugs are discovered in production
-- Onboarding new team members who break things
-- Preparing for external review
+**Consider expansion when:** - Bugs are discovered in production - Onboarding new team members who break things - Preparing for external review
 
 **Timeline:** Decide by Month 3 based on bug frequency
 
----
+------------------------------------------------------------------------
 
 ### Phase 2 Decisions (Months 6-12)
 
@@ -341,15 +328,11 @@ renv::restore()
 
 **Current Approach:** Well-organized CSV files
 
-**Triggers for migration:**
-- ✓ Query performance becomes problematic (joins taking >1 minute)
-- ✓ File management becomes unwieldy (>100 CSV files)
-- ✓ Need for referential integrity is critical
-- ✓ Team size grows (>5 active users)
-- ✓ Complex analytical queries are frequent
+**Triggers for migration:** - ✓ Query performance becomes problematic (joins taking \>1 minute) - ✓ File management becomes unwieldy (\>100 CSV files) - ✓ Need for referential integrity is critical - ✓ Team size grows (\>5 active users) - ✓ Complex analytical queries are frequent
 
 **Migration Path:**
-```r
+
+``` r
 # Phase 1: Read CSVs (current)
 data <- read_csv("data/activity/electricity.csv")
 
@@ -361,15 +344,11 @@ data <- dbReadTable(con, "electricity")
 calculate_emissions(data, emission_factors)
 ```
 
-**Implementation Steps:**
-1. Pilot DuckDB with one sector
-2. Benchmark performance vs CSVs
-3. Evaluate team comfort level
-4. Decide to expand or revert
+**Implementation Steps:** 1. Pilot DuckDB with one sector 2. Benchmark performance vs CSVs 3. Evaluate team comfort level 4. Decide to expand or revert
 
 **Timeline:** Evaluate Month 8, implement Month 9-10 if approved
 
----
+------------------------------------------------------------------------
 
 #### 2.2 Centralized Data Acquisition Hub
 
@@ -378,7 +357,8 @@ calculate_emissions(data, emission_factors)
 **Current Approach:** Manual downloads, sector-by-sector
 
 **Future Vision:**
-```
+
+```         
 ghg-data-hub/
 ├── R/
 │ ├── download_eia.R # EIA API wrapper
@@ -392,47 +372,27 @@ ghg-data-hub/
     └── download_log.csv # Audit trail
 ```
 
-**Features:**
-- Centralized data source definitions
-- Automated update checks
-- Version control of raw data
-- Notification system for new data
-- Consistent metadata tracking
+**Features:** - Centralized data source definitions - Automated update checks - Version control of raw data - Notification system for new data - Consistent metadata tracking
 
-**Triggers for implementation:**
-- ✓ Manual downloads becoming bottleneck
-- ✓ Missing data updates causing delays
-- ✓ Multiple sectors using same data sources
-- ✓ Need for systematic data versioning
+**Triggers for implementation:** - ✓ Manual downloads becoming bottleneck - ✓ Missing data updates causing delays - ✓ Multiple sectors using same data sources - ✓ Need for systematic data versioning
 
-**Dependencies:**
-- API access established with agencies
-- Data source landscape well-understood
-- Team agreement on update frequency
+**Dependencies:** - API access established with agencies - Data source landscape well-understood - Team agreement on update frequency
 
 **Timeline:** Design Month 7, pilot Month 10-12
 
----
+------------------------------------------------------------------------
 
 #### 2.3 Web-Based Data Portal
 
 **Decision:** Create public-facing data access system
 
-**Options:**
-- **Shiny Dashboard:** Interactive exploration
-- **API:** Programmatic access
-- **Static Website:** Documentation + download links
-- **All of the above:** Comprehensive platform
+**Options:** - **Shiny Dashboard:** Interactive exploration - **API:** Programmatic access - **Static Website:** Documentation + download links - **All of the above:** Comprehensive platform
 
-**Consider when:**
-- Inventory is stable and validated
-- External users requesting data access
-- Need to demonstrate transparency
-- Ready for public scrutiny
+**Consider when:** - Inventory is stable and validated - External users requesting data access - Need to demonstrate transparency - Ready for public scrutiny
 
 **Timeline:** Not before Month 12 (Phase 3+)
 
----
+------------------------------------------------------------------------
 
 ### Phase 3+ Decisions (Year 2+)
 
@@ -442,18 +402,11 @@ ghg-data-hub/
 
 **Current Approach:** Use published uncertainty ranges from EPA
 
-**Enhanced Approach:**
-- Probability distributions for emission factors
-- Correlation structures between parameters
-- Propagation through calculations
-- Full uncertainty analysis per IPCC guidelines
+**Enhanced Approach:** - Probability distributions for emission factors - Correlation structures between parameters - Propagation through calculations - Full uncertainty analysis per IPCC guidelines
 
 **Package:** `{mc2d}` or `{propagate}`
 
-**Triggers:**
-- Required for peer review or publication
-- IPCC reporting requirements
-- Stakeholder requests for uncertainty bounds
+**Triggers:** - Required for peer review or publication - IPCC reporting requirements - Stakeholder requests for uncertainty bounds
 
 <!-- --- -->
 
@@ -464,14 +417,21 @@ ghg-data-hub/
 <!-- **Concept:** Provide preliminary estimates with shorter lag -->
 
 <!-- **Requirements:** -->
+
 <!-- - Relationship models between early indicators and final data -->
+
 <!-- - Automated data pipelines -->
+
 <!-- - Uncertainty quantification for estimates -->
+
 <!-- - Clear labeling as preliminary -->
 
 <!-- **Use Cases:** -->
+
 <!-- - Quarterly estimates while waiting for annual data -->
+
 <!-- - Early warning for trend changes -->
+
 <!-- - Policy-relevant rapid response -->
 
 <!-- **Complexity:** High - requires modeling expertise -->
@@ -483,25 +443,41 @@ ghg-data-hub/
 <!-- **Decision:** Build capability for "what if" scenarios -->
 
 <!-- **Examples:** -->
+
 <!-- - "What if coal retirements accelerate?" -->
+
 <!-- - "What if methane regulations tighten?" -->
+
 <!-- - "What if agricultural practices shift?" -->
 
 <!-- **Implementation:** -->
+
 <!-- ```r -->
+
 <!-- # Scenario framework -->
+
 <!-- run_scenario <- function(baseline_data,  -->
+
 <!--                         scenario_params, -->
+
 <!--                         years = 2025:2030) { -->
+
 <!--   # Apply scenario assumptions -->
+
 <!--   # Calculate emissions -->
+
 <!--   # Compare to baseline -->
+
 <!-- } -->
+
 <!-- ``` -->
 
 <!-- **Triggers:** -->
+
 <!-- - Policy analysis requests -->
+
 <!-- - Research collaborations -->
+
 <!-- - Stakeholder engagement -->
 
 <!-- --- -->
@@ -512,96 +488,67 @@ ghg-data-hub/
 
 **Ask these questions:**
 
-1. **Does the current simple approach actually cause pain?**
-   - If no → Don't add complexity
-   - If yes → Continue evaluation
-
-2. **What's the cost of the status quo?**
-   - Time wasted?
-   - Errors introduced?
-   - Opportunities missed?
-
-3. **What's the cost of the new approach?**
-   - Learning curve?
-   - Maintenance burden?
-   - Technical debt?
-
-4. **Who benefits and how much?**
-   - Entire team or one person?
-   - Daily impact or occasional?
-   - Critical or nice-to-have?
-
-5. **Is it reversible?**
-   - Can we go back if it doesn't work?
-   - What's locked in?
-
-6. **Do we have capacity?**
-   - Time to implement properly?
-   - Skills on the team?
-   - Bandwidth to maintain?
+1.  **Does the current simple approach actually cause pain?**
+    -   If no → Don't add complexity
+    -   If yes → Continue evaluation
+2.  **What's the cost of the status quo?**
+    -   Time wasted?
+    -   Errors introduced?
+    -   Opportunities missed?
+3.  **What's the cost of the new approach?**
+    -   Learning curve?
+    -   Maintenance burden?
+    -   Technical debt?
+4.  **Who benefits and how much?**
+    -   Entire team or one person?
+    -   Daily impact or occasional?
+    -   Critical or nice-to-have?
+5.  **Is it reversible?**
+    -   Can we go back if it doesn't work?
+    -   What's locked in?
+6.  **Do we have capacity?**
+    -   Time to implement properly?
+    -   Skills on the team?
+    -   Bandwidth to maintain?
 
 ### Decision Authority
 
-**Tech decisions by data system developer:**
-- R package choices
-- Code organization
-- Git workflow details
-- Development tools
+**Tech decisions by data system developer:** - R package choices - Code organization - Git workflow details - Development tools
 
-**Collaborative decisions:**
-- Database implementation
-- Major workflow changes
-- Data access/sharing policies
-- Public-facing features
+**Collaborative decisions:** - Database implementation - Major workflow changes - Data access/sharing policies - Public-facing features
 
-**Sector lead decisions:**
-- Sector-specific methodologies
-- Data source selections
-- QA/QC thresholds
-- Reporting priorities
+**Sector lead decisions:** - Sector-specific methodologies - Data source selections - QA/QC thresholds - Reporting priorities
 
----
+------------------------------------------------------------------------
 
 ## Review Milestones
 
-**Month 3 Review:**
-- Is CSV approach working?
-- Is `syrinx` package valuable?
-- Are GitHub repos effective?
-- Need to adjust course?
+**Month 3 Review:** - Is CSV approach working? - Is `syrinx` package valuable? - Are GitHub repos effective? - Need to adjust course?
 
-**Month 6 Review:**
-- Ready for DuckDB evaluation?
-- Need centralized data hub?
-- Testing strategy adequate?
-- Workflow orchestration needed?
+**Month 6 Review:** - Ready for DuckDB evaluation? - Need centralized data hub? - Testing strategy adequate? - Workflow orchestration needed?
 
-**Month 12 Review:**
-- System meeting goals?
-- What future capabilities to prioritize?
-- Resource needs for Year 2?
-- External engagement strategy?
+**Month 12 Review:** - System meeting goals? - What future capabilities to prioritize? - Resource needs for Year 2? - External engagement strategy?
 
----
+------------------------------------------------------------------------
 
 ## Appendix: Key Package Documentation
 
 ### Essential Reading
 
-**{tidyverse}:** https://www.tidyverse.org/  
-**{targets}:** https://books.ropensci.org/targets/  
-**{renv}:** https://rstudio.github.io/renv/  
-**{testthat}:** https://testthat.r-lib.org/  
-**{pointblank}:** https://rich-iannone.github.io/pointblank/  
-**{DuckDB}:** https://duckdb.org/docs/api/r  
-**{quarto}:** https://quarto.org/docs/computations/r.html  
+**{tidyverse}:** https://www.tidyverse.org/\
+**{targets}:** https://books.ropensci.org/targets/\
+**{renv}:** https://rstudio.github.io/renv/\
+**{testthat}:** https://testthat.r-lib.org/\
+**{pointblank}:** https://rich-iannone.github.io/pointblank/\
+**{DuckDB}:** https://duckdb.org/docs/api/r\
+**{quarto}:** https://quarto.org/docs/computations/r.html
 
 ### Internal Documentation
 
-**{syrinx} package:** [Link to internal docs when available]  
-**GitHub organization:** [Your organization link]  
-**Team wiki:** [Link to wiki]  
+**{syrinx} package:** \[Link to internal docs when available\]\
+**GitHub organization:** \[Your organization link\]\
+**Team wiki:** \[Link to wiki\]
 
----
+------------------------------------------------------------------------
 
 *This addendum is a living document and will be updated as decisions are made and the system evolves.*

@@ -1,4 +1,4 @@
---- 
+---
 title: "Building a Modern U.S. GHG Inventory Data System"
 subtitle: "Maintaining Continuity, Embracing Opportunity"
 
@@ -16,6 +16,7 @@ execute:
   warning: false
 ---
 
+```{=html}
 <style>
 .principle-card {
   background: white;
@@ -144,141 +145,218 @@ execute:
   }
 }
 </style>
+```
 
 ## Our Challenge and Opportunity
 
 With the discontinuation of the official EPA inventory compilation, we face the challenge of maintaining continuity in U.S. emissions tracking while seizing the opportunity to rebuild our system using modern practices that can serve the climate community for decades.
 
-As your data system developer, my role is to create infrastructure that empowers each sector lead to do their best work while ensuring the overall inventory is coherent, defensible, and maintainable.
+As your data system developer, my role is to create infrastructure that empowers each source lead to do their best work while ensuring the overall inventory is coherent, reproducible, and maintainable.
+
+## Why Data Infrastructure First?
+
+A well-designed data system from day one:
+
+-   **Prevents technical debt** - Fixing bad infrastructure later is 10x harder than building it right initially
+
+-   **Enables scalability** - Clean foundations allow the inventory to grow without breaking
+
+-   **Ensures reproducibility** - Every calculation is traceable from the start, not reconstructed later
+
+-   **Saves time** - Good infrastructure accelerates work; bad infrastructure creates endless friction
+
+-   **Builds credibility** - Transparent, well-documented systems earn trust that spreadsheets never will
+
+**The inventory IS the data system.** The quality of our emissions estimates is inseparable from the quality of our data infrastructure. Getting this right from the beginning is not optional—it's the work itself.
 
 ## Four Guiding Principles
 
-:::: {.two-column}
-
-::: {.principle-card .blue}
-<div class="principle-title">🡆 Simplicity First</div>
-<div class="principle-subtitle">Minimize Complexity, Maximize Utility</div>
-Adopt only solutions that make compilation easier, faster, more accurate, or more transparent. Every new feature must answer: *Does this directly serve our mission?*
-
+::::::::: two-column
+::::: {.principle-card .blue}
+::: principle-title
+🡆 Simplicity First
 :::
 
-::: {.principle-card .green}
-<div class="principle-title">👥 User-Centered Design</div>
-<div class="principle-subtitle">Learn from the Experts</div>
-Built for you, not imposed on you. Your domain expertise will guide all technical implementation decisions. 
+::: principle-subtitle
+Minimize Complexity, Maximize Utility
 :::
 
-::::
+We will adopt only solutions that directly serve our mission of producing a credible, transparent inventory. Every tool or process must answer: *Does this make compilation easier, faster, more accurate, or more transparent?*
+:::::
 
-:::: {.two-column}
-
-::: {.principle-card .purple}
-<div class="principle-title">🔄 Iterative Development</div>
-<div class="principle-subtitle">Build, Learn, Improve</div>
-Start minimal, deploy quickly, gather feedback continuously, and improve based on real-world use. 
+::::: {.principle-card .green}
+::: principle-title
+👥 User-Centered Design
 :::
 
-::: {.principle-card .orange}
-<div class="principle-title">🛡️ Transparency & Reproducibility</div>
-<div class="principle-subtitle">Building Trust Through Openness</div>
-Every step of data transformation, aggregation, and calculation will be documented and traceable.
+::: principle-subtitle
+Learn from the Source Leads
 :::
 
-::::
+Built for you, not imposed on you. Focus on your work, not data housekeeping. Your domain expertise will guide all technical implementation decisions.
+:::::
+:::::::::
+
+::::::::: two-column
+::::: {.principle-card .purple}
+::: principle-title
+🔄 Iterative Development
+:::
+
+::: principle-subtitle
+Build, Learn, Improve
+:::
+
+Start minimal, deploy quickly, gather feedback continuously, and improve based on real-world use.
+:::::
+
+::::: {.principle-card .orange}
+::: principle-title
+🛡️ Transparency & Reproducibility
+:::
+
+::: principle-subtitle
+Building Resilience Through Openness
+:::
+
+Every step of data retrieval, transformation, aggregation, and calculation will be documented and traceable.
+:::::
+:::::::::
 
 ## Development Roadmap
 
-::: {.phase-box}
-<span class="phase-label blue">Phase 1</span> **Discovery** (Weeks 1–4) — Meet with sector leads, document workflows, identify priorities
+::: phase-box
+[Phase 1]{.phase-label .blue} **Discovery** (Weeks 1-TBD) — Meet with sector leads, document workflows, identify priorities
 :::
 
-::: {.phase-box}
-<span class="phase-label green">Phase 2</span> **MVP** (Months 2–4) — Build pilot sector, establish patterns, deliver working results
+::: phase-box
+[Phase 2]{.phase-label .green} **Pilot** (Months TBD) — Build pilot sector, establish patterns, deliver working results
 :::
 
-::: {.phase-box}
-<span class="phase-label purple">Phase 3</span> **Expansion** (Months 5–12) — Extend to additional sectors, refine based on lessons learned
+::: phase-box
+[Phase 3]{.phase-label .purple} **Expansion** (Months TBD) — Extend to additional sectors, refine based on lessons learned
 :::
 
-::: {.phase-box}
-<span class="phase-label orange">Phase 4</span> **Operations** (Ongoing) — Maintain, improve, adapt, and ensure long-term sustainability
+::: phase-box
+[Phase 4]{.phase-label .orange} **Operations** (Ongoing) — Maintain, improve, adapt, and ensure long-term sustainability
 :::
 
 ## Technical Approach: Start Simple
 
-:::: {.two-column}
-
-::: {.tech-box}
-<div class="tech-title">🗄️ Our Foundation</div>
-<div class="check-item">**R + tidyverse** for calculations and analysis</div>
-<div class="check-item">**Organized CSVs** for transparent data storage</div>
-<div class="check-item">**Git** for version control and collaboration</div>
-<div class="check-item">**Clear documentation** for reproducibility</div>
+::::::::::::::: two-column
+:::::::: tech-box
+::: tech-title
+🗄️ Our Foundation
 :::
 
-::: {.tech-box}
-<div class="tech-title">🎯 Why Simple Wins</div>
-<div class="arrow-item">Your data doesn't need complex databases</div>
-<div class="arrow-item">Simple joins (2–4 tables) work great with R's tidyverse tools</div>
-<div class="arrow-item">CSVs are transparent and git-friendly</div>
-<div class="arrow-item">Add complexity only when simple becomes painful</div>
+::: check-item
+**R + [{tidyverse}](https://tidyverse.org)** for calculations and data transformation
 :::
 
-::::
+::: check-item
+**Organized CSVs + [{pins}](https://pins.rstudio.com)** for transparent data storage
+:::
 
-**Key Insight:** We're optimizing for maintainability and transparency, not technological sophistication. Modern R handles your data volumes easily, and CSV files ensure that anyone can inspect, verify, and trust our inputs.
+::: check-item
+[**Git**](https://git-scm.com) for version control and collaboration
+:::
+
+::: check-item
+[**{roxygen2}**](https://roxygen2.r-lib.org) for automated documentation and reproducibility
+:::
+::::::::
+
+:::::::: tech-box
+::: tech-title
+🎯 Why Start Simple?
+:::
+
+::: arrow-item
+Our data probably doesn't need complex databases
+:::
+
+::: arrow-item
+Simple joins (2–4 tables) work great with R's tidyverse tools
+:::
+
+::: arrow-item
+CSVs are transparent and git-friendly
+:::
+
+::: arrow-item
+[Add complexity only as needed](https://johncandeto.com/information-flow/research-john-gall-galls-law "Gall's Law: A complex system that works is invariably found to have evolved from a simple system that worked. A complex system designed from scratch never works and cannot be patched up to make it work. You have to start over with a working simple system.").
+:::
+::::::::
+:::::::::::::::
+
+**Key Insight:** We're optimizing for maintainability, transparency, and resilience. Modern R handles your data volumes easily, and CSV files ensure that anyone can inspect, verify, and trust our inputs.
 
 ## Success Looks Like...
 
-::: {.success-grid}
-
-::: {.success-box}
-<div class="success-title">Efficiency</div>
-Compilation takes less time than before
+:::::::::::::::: success-grid
+:::: success-box
+::: success-title
+Efficiency
 :::
 
-::: {.success-box}
-<div class="success-title">Transparency</div>
-Results are easier to explain and verify
+Compilation takes less time and tedium than before–no more copy-pasting in Excel
+::::
+
+:::: success-box
+::: success-title
+Transparency
 :::
 
-::: {.success-box}
-<div class="success-title">Adaptability</div>
-Quick response to data revisions
+Results are easier to explain and verify–documentation is automatically produced for all steps
+::::
+
+:::: success-box
+::: success-title
+Adaptability
 :::
 
-::: {.success-box}
-<div class="success-title">Accessibility</div>
-New members get up to speed quickly
+Quick response to data and methodology revisions
+::::
+
+:::: success-box
+::: success-title
+Accessibility
 :::
 
-::: {.success-box}
-<div class="success-title">Empowerment</div>
-System serves the team, not constrains it
+New team members get up to speed quickly
+::::
+
+:::: success-box
+::: success-title
+Empowerment
 :::
 
-::: {.success-box}
-<div class="success-title">Credibility</div>
-External stakeholders trust our outputs
+System serves the team, not constrains it–we can add stuff that works and discard what doesn't
+::::
+
+:::: success-box
+::: success-title
+Resilience
 :::
 
-:::
+We will build a framework not just for this year's Inventory, but every Inventory
+::::
+:::::
+::::::::::::::::
 
-## What I Need From You
+## What I Need From the Team
 
-- **Your time** for initial discovery conversations (1–2 hours per sector lead)
-- **Your honesty** about what works and what doesn't in your current workflow
-- **Your patience** as we iterate toward better solutions
-- **Your feedback** when something isn't working as expected
-- **Your ideas** about what would make your work easier
+-   **Time** for initial discovery conversations (1–2 hours per source lead)
+-   **Honesty** about what works and what doesn't in your current workflow
+-   **Patience** as we iterate toward better solutions
+-   **Feedback** when something isn't working as expected
+-   **Ideas** about what would make your work easier
 
 ## What You Can Expect From Me
 
-- **Responsiveness** to your needs and concerns
-- **Transparency** about technical decisions and tradeoffs
-- **Documentation** so the system is never a black box
-- **Training** to ensure everyone can use the tools effectively
-- **Flexibility** to adapt as we learn what works
-- **Accountability** for delivering a system that actually helps
-
-
+-   **Responsiveness** to your needs and concerns
+-   **Transparency** about technical decisions and tradeoffs
+-   **Documentation** so the system is never a black box
+-   **Training** to ensure everyone can use the tools effectively
+-   **Flexibility** to adapt as we learn what works
+-   **Accountability** for delivering a system that actually helps
