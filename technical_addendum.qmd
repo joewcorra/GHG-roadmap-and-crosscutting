@@ -1,14 +1,12 @@
 ---
 title: "Technical Implementation Addendum"
 subtitle: "GitHub Architecture, R Package Ecosystem, and Future Decision Points"
+description: "NOTE: This is a work in progress! Nothing below is final; I just wanted to get a framework in place. 12/23/2025 JC"
 format:
   html:
     toc: true
     toc-depth: 3
     theme: cosmo
-  pdf:
-    toc: true
-    colorlinks: true
 execute:
   echo: true
   warning: false
@@ -137,16 +135,14 @@ Columns:
 ``` r
 # Key packages
 library(tidyverse) # Data manipulation, visualization
-library(ellmer) # Leverage LLMs via API
 library(readxl) # Excel file import
-library(targets) # Construct data pipelines
-library(gt) # Create custom tables
-library(quarto) # Create dynamic documents
-library(roxygen2) # Automated documentation
+library(remotes) # Easy package deployment
 library(jsonlite) # Read and create JSON files
 library(janitor) # Data cleaning utilities
+library(rvest) # Webscraping
+library(httr) # Work with HMTL data
 
-# Our custom package
+ # Our custom package
 library(syrinx) # Internal data harmonization and data cleaning
 ```
 
@@ -154,6 +150,7 @@ library(syrinx) # Internal data harmonization and data cleaning
 
 ``` r
 library(here) # Path management
+library(ellmer) # Leverage LLMs via API
 library(targets) # Workflow orchestration (optional Phase 2)
 library(renv) # Dependency management
 library(usethis) # Development utilities
@@ -175,6 +172,7 @@ library(quarto) # Document generation
 library(knitr) # Report generation
 library(kableExtra) # Table formatting
 library(gt) # Publication-ready tables
+library(roxygen2) # Automated documentation
 ```
 
 #### Visualization
@@ -208,26 +206,15 @@ library(duckdb) # DuckDB connection (when needed)
 **Key Functions:**
 
 ``` r
-# Data harmonization
-syrinx::harmonize_columns() # Standardize column names
-syrinx::harmonize_units() # Convert to standard units
-syrinx::harmonize_dates() # Standardize date formats
-syrinx::harmonize_locations() # Standardize state/region codes
-
-# Data validation
-syrinx::validate_schema() # Check expected columns/types
-syrinx::validate_ranges() # Check value ranges
-syrinx::validate_references() # Check referential integrity
+# Data harmonization and validation
+syrinx::pre_clean() # Convenience function; wraps several data cleaning operations
+syrinx::use_dictionary() # Consult dictionary to validate input data
+syrinx::llm_dictionary() # LLM-generated corrections for invalid data
 
 # Common transformations
-syrinx::aggregate_temporal() # Aggregate to different time periods
-syrinx::aggregate_spatial() # Aggregate to different regions
-syrinx::fill_gaps() # Handle missing data
-
-# Emission calculations
-syrinx::calculate_co2e() # Convert to CO2-equivalent
-syrinx::apply_emission_factor() # Standard EF application
-syrinx::uncertainty_bounds() # Calculate uncertainty ranges
+syrinx::apply_metadata_labels() # Label dataframe columns 
+syrinx::convert_units_in() # Convert input data to canonical units
+syrinx::convert_units_out() # Convert output data to desired units
 ```
 
 **Package Structure:**
@@ -238,9 +225,7 @@ syrinx/
 ├── NAMESPACE
 ├── R/
 │ ├── harmonize.R
-│ ├── validate.R
 │ ├── transform.R
-│ ├── calculate.R
 │ └── utils.R
 ├── data/ # Built-in reference data
 │ ├── standard_units.rda
@@ -258,10 +243,10 @@ syrinx/
 
 ``` r
 # From internal repository
-remotes::install_github("your-org/syrinx")
+remotes::install_github("joewcorra/syrinx")
 
 # Or if using private GitHub
-remotes::install_github("your-org/syrinx", 
+remotes::install_github("joewcorra/syrinx", 
                         auth_token = Sys.getenv("GITHUB_PAT"))
 ```
 
@@ -277,7 +262,7 @@ renv::init()
 
 # Install packages
 install.packages(c("tidyverse", "here", "testthat"))
-remotes::install_github("your-org/syrinx")
+remotes::install_github("joewcorra/syrinx")
 
 # Snapshot current state
 renv::snapshot()
@@ -488,7 +473,7 @@ ghg-data-hub/
 
 **Ask these questions:**
 
-1.  **Does the current simple approach actually cause pain?**
+1.  **Does the current simple approach actually cause problems?**
     -   If no → Don't add complexity
     -   If yes → Continue evaluation
 2.  **What's the cost of the status quo?**

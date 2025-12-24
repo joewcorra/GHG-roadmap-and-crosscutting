@@ -1,0 +1,25 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "U.S. GHG Inventory System Proposal"
+  navbar:
+    left:
+      - text: "Main Proposal"
+        href: ghg_proposal.qmd
+      - text: "Technical Addendum"
+        href: technical_addendum.qmd
+      # - text: "Long-Range Vision: Capacity-Building"       
+      #   href: llm_capacity_building.qmd
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: left
+    toc-depth: 3
+    embed-resources: true
+    standalone: true
+    code-fold: false
+    code-tools: false

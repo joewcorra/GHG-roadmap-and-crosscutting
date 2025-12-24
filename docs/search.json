@@ -1,0 +1,191 @@
+[
+  {
+    "objectID": "technical_addendum.html",
+    "href": "technical_addendum.html",
+    "title": "Technical Implementation Addendum",
+    "section": "",
+    "text": "We will use a modular repository structure with separate repos for each major GHG source category, coordinated through an overarching GitHub Project board.\n\n\ngithub.com/your-org/\n├── ghg-inventory-project/ # GitHub Project\n├── ghg-energy/ # IPCC Category 1: Energy\n├── ghg-ippu/ # IPCC Category 2: Industrial Processes\n├── ghg-agriculture/ # IPCC Category 3: Agriculture\n├── ghg-lulucf/ # IPCC Category 4: Land Use\n├── ghg-waste/ # IPCC Category 5: Waste\n├── ghg-core/ # Shared utilities & documentation\n└── syrinx/ # Internal data harmonization package\n\n\n\nAdvantages: - Source independence: Teams can work without conflicts - Clear ownership: Each source lead owns their repository - Separate release cycles: Update sources independently - Smaller codebases: Easier to understand and maintain - Specific issues: Source-specific discussions stay organized\nCoordination via GitHub Project: - Cross-repo task tracking - Unified timeline and milestones - Dependencies between sectors visible - Overall inventory status dashboard\n\n\n\n\nEach sector repository follows a consistent structure:\nghg-energy/\n├── README.md # Sector overview & quick start\n├── METHODOLOGY.md # Detailed methodology documentation\n├── data/\n│ ├── reference/ # Emission factors, lookups\n│ │ ├── emission_factors.csv\n│ │ ├── gwp_values.csv\n│ │ └── fuel_classifications.csv\n│ ├── activity/ # Processed activity data (git-ignored if large)\n│ └── calculated/ # Results (date-stamped)\n├── data-raw/ # Original downloads (git-ignored)\n├── R/\n│ ├── 01_download.R # Data acquisition scripts\n│ ├── 02_clean.R # Data cleaning and harmonization\n│ ├── 03_calculate.R # Emission calculations\n│ ├── 04_validate.R # QA/QC checks\n│ └── functions/ # Helper functions\n│ ├── load_data.R\n│ ├── calculations.R\n│ └── validation.R\n├── tests/\n│ ├── testthat/ # Unit tests\n│ └── test_calculations.R\n├── outputs/\n│ ├── reports/ # Generated reports\n│ └── figures/ # Plots and visualizations\n├── docs/ # Additional documentation\n│ ├── data_dictionary.md\n│ └── changelog.md\n├── .github/\n│ ├── workflows/ # GitHub Actions (CI/CD)\n│ │ └── run_tests.yml\n│ └── ISSUE_TEMPLATE/\n├── renv.lock # R package dependencies\n└── _targets.R # Targets workflow (optional)\n\n\n\nCentral repository for shared resources:\nghg-core/\n├── README.md\n├── reference_data/ # Cross-sector reference data\n│ ├── ipcc_categories.csv # Complete IPCC hierarchy\n│ ├── gwp_ar5.csv # Global warming potentials\n│ ├── gwp_ar6.csv\n│ ├── state_codes.csv\n│ └── region_mappings.csv\n├── templates/ # Templates for sector repos\n│ ├── repo_template/\n│ └── script_templates/\n├── documentation/\n│ ├── methodology_standards.md # Cross-sector standards\n│ ├── qaqc_procedures.md\n│ ├── naming_conventions.md\n│ └── git_workflow.md\n├── R/\n│ └── shared_functions/ # Functions used across sectors\n└── tests/\n\n\n\nProject Name: U.S. GHG Inventory Development\nBoard Structure:\nColumns:\n├── Backlog # Future work\n├── Ready # Prioritized and scoped\n├── In Progress # Active development\n├── Review # Code review / validation\n├── Done # Completed this sprint\n└── Blocked # Waiting on dependencies\nIssue Labels (cross-repo): - sector:energy, sector:agriculture, etc. - priority:high, priority:medium, priority:low - type:bug, type:feature, type:documentation - status:blocked, status:needs-review - phase:discovery, phase:mvp, phase:expansion"
+  },
+  {
+    "objectID": "technical_addendum.html#github-repository-architecture",
+    "href": "technical_addendum.html#github-repository-architecture",
+    "title": "Technical Implementation Addendum",
+    "section": "",
+    "text": "We will use a modular repository structure with separate repos for each major GHG source category, coordinated through an overarching GitHub Project board.\n\n\ngithub.com/your-org/\n├── ghg-inventory-project/ # GitHub Project\n├── ghg-energy/ # IPCC Category 1: Energy\n├── ghg-ippu/ # IPCC Category 2: Industrial Processes\n├── ghg-agriculture/ # IPCC Category 3: Agriculture\n├── ghg-lulucf/ # IPCC Category 4: Land Use\n├── ghg-waste/ # IPCC Category 5: Waste\n├── ghg-core/ # Shared utilities & documentation\n└── syrinx/ # Internal data harmonization package\n\n\n\nAdvantages: - Source independence: Teams can work without conflicts - Clear ownership: Each source lead owns their repository - Separate release cycles: Update sources independently - Smaller codebases: Easier to understand and maintain - Specific issues: Source-specific discussions stay organized\nCoordination via GitHub Project: - Cross-repo task tracking - Unified timeline and milestones - Dependencies between sectors visible - Overall inventory status dashboard\n\n\n\n\nEach sector repository follows a consistent structure:\nghg-energy/\n├── README.md # Sector overview & quick start\n├── METHODOLOGY.md # Detailed methodology documentation\n├── data/\n│ ├── reference/ # Emission factors, lookups\n│ │ ├── emission_factors.csv\n│ │ ├── gwp_values.csv\n│ │ └── fuel_classifications.csv\n│ ├── activity/ # Processed activity data (git-ignored if large)\n│ └── calculated/ # Results (date-stamped)\n├── data-raw/ # Original downloads (git-ignored)\n├── R/\n│ ├── 01_download.R # Data acquisition scripts\n│ ├── 02_clean.R # Data cleaning and harmonization\n│ ├── 03_calculate.R # Emission calculations\n│ ├── 04_validate.R # QA/QC checks\n│ └── functions/ # Helper functions\n│ ├── load_data.R\n│ ├── calculations.R\n│ └── validation.R\n├── tests/\n│ ├── testthat/ # Unit tests\n│ └── test_calculations.R\n├── outputs/\n│ ├── reports/ # Generated reports\n│ └── figures/ # Plots and visualizations\n├── docs/ # Additional documentation\n│ ├── data_dictionary.md\n│ └── changelog.md\n├── .github/\n│ ├── workflows/ # GitHub Actions (CI/CD)\n│ │ └── run_tests.yml\n│ └── ISSUE_TEMPLATE/\n├── renv.lock # R package dependencies\n└── _targets.R # Targets workflow (optional)\n\n\n\nCentral repository for shared resources:\nghg-core/\n├── README.md\n├── reference_data/ # Cross-sector reference data\n│ ├── ipcc_categories.csv # Complete IPCC hierarchy\n│ ├── gwp_ar5.csv # Global warming potentials\n│ ├── gwp_ar6.csv\n│ ├── state_codes.csv\n│ └── region_mappings.csv\n├── templates/ # Templates for sector repos\n│ ├── repo_template/\n│ └── script_templates/\n├── documentation/\n│ ├── methodology_standards.md # Cross-sector standards\n│ ├── qaqc_procedures.md\n│ ├── naming_conventions.md\n│ └── git_workflow.md\n├── R/\n│ └── shared_functions/ # Functions used across sectors\n└── tests/\n\n\n\nProject Name: U.S. GHG Inventory Development\nBoard Structure:\nColumns:\n├── Backlog # Future work\n├── Ready # Prioritized and scoped\n├── In Progress # Active development\n├── Review # Code review / validation\n├── Done # Completed this sprint\n└── Blocked # Waiting on dependencies\nIssue Labels (cross-repo): - sector:energy, sector:agriculture, etc. - priority:high, priority:medium, priority:low - type:bug, type:feature, type:documentation - status:blocked, status:needs-review - phase:discovery, phase:mvp, phase:expansion"
+  },
+  {
+    "objectID": "technical_addendum.html#r-package-ecosystem",
+    "href": "technical_addendum.html#r-package-ecosystem",
+    "title": "Technical Implementation Addendum",
+    "section": "R Package Ecosystem",
+    "text": "R Package Ecosystem\n\nCore Packages\n\nData Management & Manipulation\n# Key packages\nlibrary(tidyverse) # Data manipulation, visualization\nlibrary(readxl) # Excel file import\nlibrary(remotes) # Easy package deployment\nlibrary(jsonlite) # Read and create JSON files\nlibrary(janitor) # Data cleaning utilities\nlibrary(rvest) # Webscraping\nlibrary(httr) # Work with HMTL data\n\n # Our custom package\nlibrary(syrinx) # Internal data harmonization and data cleaning\n\n\nWorkflow & Reproducibility\nlibrary(here) # Path management\nlibrary(ellmer) # Leverage LLMs via API\nlibrary(targets) # Workflow orchestration (optional Phase 2)\nlibrary(renv) # Dependency management\nlibrary(usethis) # Development utilities\n\n\nQuality Assurance\nlibrary(testthat) # Unit testing\nlibrary(pointblank) # Data validation\nlibrary(assertr) # Data quality checks\nlibrary(validate) # Rule-based validation\n\n\nDocumentation & Reporting\nlibrary(quarto) # Document generation\nlibrary(knitr) # Report generation\nlibrary(kableExtra) # Table formatting\nlibrary(gt) # Publication-ready tables\nlibrary(roxygen2) # Automated documentation\n\n\nVisualization\nlibrary(ggplot2) # Core plotting\nlibrary(patchwork) # Compose multiple plots\nlibrary(scales) # Scale functions\nlibrary(plotly) # Interactive plots (optional)\n\n\nSpatial Data (for LULUCF)\nlibrary(sf) # Spatial data handling\nlibrary(terra) # Raster data\nlibrary(mapview) # Interactive maps\n\n\nDatabase (Future Phase)\nlibrary(DBI) # Database interface\nlibrary(duckdb) # DuckDB connection (when needed)\n\n\n\nThe syrinx Package\nPurpose: Internal package for standardizing data cleaning and harmonization across all sectors.\nKey Functions:\n# Data harmonization and validation\nsyrinx::pre_clean() # Convenience function; wraps several data cleaning operations\nsyrinx::use_dictionary() # Consult dictionary to validate input data\nsyrinx::llm_dictionary() # LLM-generated corrections for invalid data\n\n# Common transformations\nsyrinx::apply_metadata_labels() # Label dataframe columns \nsyrinx::convert_units_in() # Convert input data to canonical units\nsyrinx::convert_units_out() # Convert output data to desired units\nPackage Structure:\nsyrinx/\n├── DESCRIPTION\n├── NAMESPACE\n├── R/\n│ ├── harmonize.R\n│ ├── transform.R\n│ └── utils.R\n├── data/ # Built-in reference data\n│ ├── standard_units.rda\n│ └── standard_columns.rda\n├── tests/\n│ └── testthat/\n├── man/ # Documentation\n├── vignettes/ # Usage examples\n│ ├── getting_started.Rmd\n│ └── validation_guide.Rmd\n└── README.md\nInstallation:\n# From internal repository\nremotes::install_github(\"joewcorra/syrinx\")\n\n# Or if using private GitHub\nremotes::install_github(\"joewcorra/syrinx\", \n                        auth_token = Sys.getenv(\"GITHUB_PAT\"))\n\n\nPackage Management Strategy\nUsing renv for Reproducibility:\nEach sector repository includes renv.lock to freeze package versions:\n# Initialize renv in a new sector repo\nrenv::init()\n\n# Install packages\ninstall.packages(c(\"tidyverse\", \"here\", \"testthat\"))\nremotes::install_github(\"joewcorra/syrinx\")\n\n# Snapshot current state\nrenv::snapshot()\n\n# Others can restore exact environment\nrenv::restore()"
+  },
+  {
+    "objectID": "technical_addendum.html#future-decision-points",
+    "href": "technical_addendum.html#future-decision-points",
+    "title": "Technical Implementation Addendum",
+    "section": "Future Decision Points",
+    "text": "Future Decision Points\n\nPhase 1 Decisions (Months 0-6)\n\n1.1 Workflow Orchestration: {targets} vs Scripts\nDecision: Whether to implement {targets} pipeline management\nCurrent Approach: Sequential R scripts (01_download.R, 02_clean.R, etc.)\nConsider {targets} when: - Scripts become complex with many interdependencies - Rebuilding everything is taking too long - Need fine-grained caching of intermediate results - Multiple people running overlapping analyses\nEvaluation Criteria: - Is manual script execution becoming error-prone? - Are we re-running expensive calculations unnecessarily? - Would the learning curve justify the benefits?\nTimeline: Re-evaluate after MVP (Month 4)\n\n\n\n1.2 Testing Strategy: Depth vs Speed\nDecision: How comprehensive should automated testing be?\nCurrent Approach: Basic unit tests for calculation functions\nOptions: - Minimal: Test core calculations only - Moderate: Add data validation tests - Comprehensive: Include integration tests, benchmark tests\nConsider expansion when: - Bugs are discovered in production - Onboarding new team members who break things - Preparing for external review\nTimeline: Decide by Month 3 based on bug frequency\n\n\n\n\nPhase 2 Decisions (Months 6-12)\n\n2.1 Database Implementation: DuckDB\nDecision: When/whether to migrate from CSVs to DuckDB\nCurrent Approach: Well-organized CSV files\nTriggers for migration: - ✓ Query performance becomes problematic (joins taking &gt;1 minute) - ✓ File management becomes unwieldy (&gt;100 CSV files) - ✓ Need for referential integrity is critical - ✓ Team size grows (&gt;5 active users) - ✓ Complex analytical queries are frequent\nMigration Path:\n# Phase 1: Read CSVs (current)\ndata &lt;- read_csv(\"data/activity/electricity.csv\")\n\n# Phase 2: Add DuckDB option\ncon &lt;- dbConnect(duckdb::duckdb(), \"ghg_inventory.duckdb\")\ndata &lt;- dbReadTable(con, \"electricity\")\n\n# Functions remain unchanged\ncalculate_emissions(data, emission_factors)\nImplementation Steps: 1. Pilot DuckDB with one sector 2. Benchmark performance vs CSVs 3. Evaluate team comfort level 4. Decide to expand or revert\nTimeline: Evaluate Month 8, implement Month 9-10 if approved\n\n\n\n2.2 Centralized Data Acquisition Hub\nDecision: Build automated data download/update system\nCurrent Approach: Manual downloads, sector-by-sector\nFuture Vision:\nghg-data-hub/\n├── R/\n│ ├── download_eia.R # EIA API wrapper\n│ ├── download_epa.R # EPA GHGRP\n│ ├── download_usda.R # USDA NASS\n│ └── schedule_updates.R # Automated scheduling\n├── data/\n│ ├── raw/ # Downloaded files\n│ └── metadata/ # Download logs\n└── logs/\n    └── download_log.csv # Audit trail\nFeatures: - Centralized data source definitions - Automated update checks - Version control of raw data - Notification system for new data - Consistent metadata tracking\nTriggers for implementation: - ✓ Manual downloads becoming bottleneck - ✓ Missing data updates causing delays - ✓ Multiple sectors using same data sources - ✓ Need for systematic data versioning\nDependencies: - API access established with agencies - Data source landscape well-understood - Team agreement on update frequency\nTimeline: Design Month 7, pilot Month 10-12\n\n\n\n2.3 Web-Based Data Portal\nDecision: Create public-facing data access system\nOptions: - Shiny Dashboard: Interactive exploration - API: Programmatic access - Static Website: Documentation + download links - All of the above: Comprehensive platform\nConsider when: - Inventory is stable and validated - External users requesting data access - Need to demonstrate transparency - Ready for public scrutiny\nTimeline: Not before Month 12 (Phase 3+)\n\n\n\n\nPhase 3+ Decisions (Year 2+)\n\n3.1 Advanced Uncertainty Quantification\nDecision: Implement Monte Carlo simulation\nCurrent Approach: Use published uncertainty ranges from EPA\nEnhanced Approach: - Probability distributions for emission factors - Correlation structures between parameters - Propagation through calculations - Full uncertainty analysis per IPCC guidelines\nPackage: {mc2d} or {propagate}\nTriggers: - Required for peer review or publication - IPCC reporting requirements - Stakeholder requests for uncertainty bounds"
+  },
+  {
+    "objectID": "technical_addendum.html#decision-making-framework",
+    "href": "technical_addendum.html#decision-making-framework",
+    "title": "Technical Implementation Addendum",
+    "section": "Decision-Making Framework",
+    "text": "Decision-Making Framework\n\nWhen to Add Complexity\nAsk these questions:\n\nDoes the current simple approach actually cause problems?\n\nIf no → Don’t add complexity\nIf yes → Continue evaluation\n\nWhat’s the cost of the status quo?\n\nTime wasted?\nErrors introduced?\nOpportunities missed?\n\nWhat’s the cost of the new approach?\n\nLearning curve?\nMaintenance burden?\nTechnical debt?\n\nWho benefits and how much?\n\nEntire team or one person?\nDaily impact or occasional?\nCritical or nice-to-have?\n\nIs it reversible?\n\nCan we go back if it doesn’t work?\nWhat’s locked in?\n\nDo we have capacity?\n\nTime to implement properly?\nSkills on the team?\nBandwidth to maintain?\n\n\n\n\nDecision Authority\nTech decisions by data system developer: - R package choices - Code organization - Git workflow details - Development tools\nCollaborative decisions: - Database implementation - Major workflow changes - Data access/sharing policies - Public-facing features\nSector lead decisions: - Sector-specific methodologies - Data source selections - QA/QC thresholds - Reporting priorities"
+  },
+  {
+    "objectID": "technical_addendum.html#review-milestones",
+    "href": "technical_addendum.html#review-milestones",
+    "title": "Technical Implementation Addendum",
+    "section": "Review Milestones",
+    "text": "Review Milestones\nMonth 3 Review: - Is CSV approach working? - Is syrinx package valuable? - Are GitHub repos effective? - Need to adjust course?\nMonth 6 Review: - Ready for DuckDB evaluation? - Need centralized data hub? - Testing strategy adequate? - Workflow orchestration needed?\nMonth 12 Review: - System meeting goals? - What future capabilities to prioritize? - Resource needs for Year 2? - External engagement strategy?"
+  },
+  {
+    "objectID": "technical_addendum.html#appendix-key-package-documentation",
+    "href": "technical_addendum.html#appendix-key-package-documentation",
+    "title": "Technical Implementation Addendum",
+    "section": "Appendix: Key Package Documentation",
+    "text": "Appendix: Key Package Documentation\n\nEssential Reading\n{tidyverse}: https://www.tidyverse.org/\n{targets}: https://books.ropensci.org/targets/\n{renv}: https://rstudio.github.io/renv/\n{testthat}: https://testthat.r-lib.org/\n{pointblank}: https://rich-iannone.github.io/pointblank/\n{DuckDB}: https://duckdb.org/docs/api/r\n{quarto}: https://quarto.org/docs/computations/r.html\n\n\nInternal Documentation\n{syrinx} package: [Link to internal docs when available]\nGitHub organization: [Your organization link]\nTeam wiki: [Link to wiki]\n\nThis addendum is a living document and will be updated as decisions are made and the system evolves."
+  },
+  {
+    "objectID": "ghg_proposal.html",
+    "href": "ghg_proposal.html",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "",
+    "text": "With the discontinuation of the official EPA inventory compilation, we face the challenge of maintaining continuity in U.S. emissions tracking while seizing the opportunity to rebuild our system using modern practices that can serve the climate community for decades.\nAs your data system developer, my role is to create infrastructure that empowers each source lead to do their best work while ensuring the overall inventory is coherent, reproducible, and maintainable."
+  },
+  {
+    "objectID": "ghg_proposal.html#our-challenge-and-opportunity",
+    "href": "ghg_proposal.html#our-challenge-and-opportunity",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "",
+    "text": "With the discontinuation of the official EPA inventory compilation, we face the challenge of maintaining continuity in U.S. emissions tracking while seizing the opportunity to rebuild our system using modern practices that can serve the climate community for decades.\nAs your data system developer, my role is to create infrastructure that empowers each source lead to do their best work while ensuring the overall inventory is coherent, reproducible, and maintainable."
+  },
+  {
+    "objectID": "ghg_proposal.html#four-guiding-principles",
+    "href": "ghg_proposal.html#four-guiding-principles",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "Four Guiding Principles",
+    "text": "Four Guiding Principles\n\n\n\n🡆 Infrastructure First\n\n\nMinimize Complexity, Maximize Utility\n\nA well-designed data system from day one prevents technical debt, ensures scalability and reproducibility, and saves time in the long run. Good infrastructure accelerates work; bad infrastructure creates endless friction.\n\n\n\n👥 User-Centered Design\n\n\nLearn from the Source Leads\n\nBuilt for you, not imposed on you. Focus on your work, not data housekeeping and chasing errors in spreadsheets. Your domain expertise will guide all technical implementation decisions.\n\n\n\n\n\n🔄 Iterative Development\n\n\nBuild, Learn, Improve\n\nStart simple, deploy quickly, gather feedback continuously, and improve based on real-world use. Add new solutions when needed, discard what doesn’t work, make room for new ideas. Every tool or process must answer: Does this make compilation easier, faster, more accurate, or more transparent?\n\n\n\n🛡️ Transparency & Reproducibility\n\n\nBuilding Resilience Through Openness\n\nEvery step of data retrieval, transformation, aggregation, and calculation will be documented and traceable, building a foundation for future improvements. Our goal is not next year’s Inventory–it’s every Inventory, every year."
+  },
+  {
+    "objectID": "ghg_proposal.html#development-roadmap",
+    "href": "ghg_proposal.html#development-roadmap",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "Development Roadmap",
+    "text": "Development Roadmap\n\nPhase 1 Discovery (Weeks 1-TBD) — Meet with leads, document workflows, set priorities\n\n\nPhase 2 Pilot (Months TBD) — Build pilot sector, establish patterns, deliver working results\n\n\nPhase 3 Expansion (Months TBD) — Extend to additional sectors, refine based on lessons learned\n\n\nPhase 4 Operations (Ongoing) — Maintain, improve, adapt, and ensure long-term sustainability"
+  },
+  {
+    "objectID": "ghg_proposal.html#technical-approach-foundations",
+    "href": "ghg_proposal.html#technical-approach-foundations",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "Technical Approach: Foundations",
+    "text": "Technical Approach: Foundations\n\n\n\n🗄️ Our Foundation\n\n\nR + {tidyverse} for calculations and data transformation\n\n\nOrganized CSVs for transparent data storage\n\n\nGit for version control and collaboration\n\n\n\n\n🎯 Start Simple\n\n\nOur data may not require need complex databases\n\n\nSimple joins (2–4 tables) work great with R’s tidyverse tools\n\n\nAdd complexity only as needed.\n\n\n\nKey Insight: We’re optimizing for maintainability, transparency, and resilience. Modern R handles your data volumes easily, and CSV files ensure that anyone can inspect, verify, and trust our inputs."
+  },
+  {
+    "objectID": "ghg_proposal.html#current-toolkit-and-future-capabilities",
+    "href": "ghg_proposal.html#current-toolkit-and-future-capabilities",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "Current Toolkit and Future Capabilities",
+    "text": "Current Toolkit and Future Capabilities\n\n\n\nAvailable Now\n\nCentralized communication and issue resolution via GitHub\nData pipelines for workflow management\nCoded data pulls via API and webscraping\nScheduled data retrieval\nAutomated metadata labeling\nIntegrated data dictionary for data cleaning\nLLM-driven data harmonization tool\n\n\n\nIn Development\n\nAutomatic unit conversion\n“Unitless” internal calculations\nAutomated code and workflow documentation\nAutomated figure and table generation\nScheduled, automated Quarto reporting\n\n\n\nFuture Options\n\nColumn-oriented relational database system\nCentralized Data Hub to manage all data storage and retrieval\nInteractive data exploration dashboards\nAutomated QA/QC tools\nCloud deployment\nAdvanced modeling including Monte Carlo simulations\nGIS analysis tools"
+  },
+  {
+    "objectID": "ghg_proposal.html#what-i-will-need-from-the-team",
+    "href": "ghg_proposal.html#what-i-will-need-from-the-team",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "What I Will Need From the Team",
+    "text": "What I Will Need From the Team\n\nTime for initial discovery conversations\nHonesty about what works and what doesn’t in your current workflow\nPatience as we iterate toward better solutions\nFeedback when something isn’t working as expected\nIdeas about what would make your work easier"
+  },
+  {
+    "objectID": "ghg_proposal.html#what-you-can-expect-from-me",
+    "href": "ghg_proposal.html#what-you-can-expect-from-me",
+    "title": "Building a Modern U.S. GHG Inventory Data System",
+    "section": "What You Can Expect From Me",
+    "text": "What You Can Expect From Me\n\nResponsiveness to your needs and concerns\nTransparency about technical decisions and tradeoffs\nDocumentation so the system is never a black box\nTraining to ensure everyone can use the tools effectively\nFlexibility to adapt as we learn what works\nAccountability for delivering a system that actually helps"
+  },
+  {
+    "objectID": "llm_capacity_building.html",
+    "href": "llm_capacity_building.html",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "",
+    "text": "Long-Range Vision • 2-3 Years\n\n\n\nThis document outlines an ambitious vision for transforming the U.S. GHG Inventory system into a global capacity-building platform using large language models."
+  },
+  {
+    "objectID": "llm_capacity_building.html#the-big-idea",
+    "href": "llm_capacity_building.html#the-big-idea",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "The Big Idea",
+    "text": "The Big Idea\nTransform the U.S. GHG Inventory system into a global capacity-building platform that uses large language models to generate customized, coded inventory systems for any country based on their specific data availability, technical capacity, and reporting needs.\nThe Innovation: Use LLMs not to understand GHG science, but as a code generation and customization engine that assembles validated templates into country-specific inventory systems."
+  },
+  {
+    "objectID": "llm_capacity_building.html#the-three-step-framework",
+    "href": "llm_capacity_building.html#the-three-step-framework",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "The Three-Step Framework",
+    "text": "The Three-Step Framework\n\nStep 1: Distill to Elements 📚\nBreak down each inventory compilation step into its most fundamental, atomic components:\n\nData acquisition patterns - How we get activity data\nCalculation structures - Mathematical operations and logic\nValidation logic - QA/QC checks and thresholds\nIPCC tier decision trees - When to use Tier 1 vs. 2 vs. 3\nUncertainty propagation - How errors compound through calculations\n\nThe key: Every decision, every calculation, every check is decomposed into its simplest form and documented.\n\n\n\nStep 2: Build Templates 💻\nConstruct parameterized code templates for every possible inventory component:\n\nSector-specific modules - Energy, transport, agriculture, etc.\nData source adapters - EIA, EPA GHGRP, USDA, etc.\nTier 1/2/3 implementations - Multiple methodological approaches\nQA/QC procedures - Standardized validation routines\nReporting formats - UNFCCC-compliant outputs\n\nThe key: Templates are validated, tested, and proven to work. They’re not theoretical—they’re extracted from our working U.S. system.\n\n\n\nStep 3: LLM Generation ⚡\nUse LLM to assemble customized inventory systems based on country context:\n\nData availability assessment - What data does the country have?\nAppropriate tier selection - Match methodology to capacity\nCode composition & adaptation - Assemble the right templates\nDocumentation generation - Explain how everything works\nTraining material creation - Help users understand the system\n\nThe key: The LLM doesn’t invent—it selects, combines, and customizes pre-validated components."
+  },
+  {
+    "objectID": "llm_capacity_building.html#example-country-x-builds-their-inventory",
+    "href": "llm_capacity_building.html#example-country-x-builds-their-inventory",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Example: Country X Builds Their Inventory",
+    "text": "Example: Country X Builds Their Inventory\n\n\nInput 🌍\nCountry X describes their situation: - Limited industrial data - Good electricity statistics\n- Agricultural focus - 3 technical staff members - Need Tier 1/2 methods\n\nLLM Analysis 🤖\nSystem assesses capabilities and recommends: - Tier 1 for industry (limited data) - Tier 2 for energy (good statistics) - Prioritize agriculture sector - Simplified workflows for small team\n\n\n\n\nCode Generation 💾\nLLM assembles custom R package: - Appropriate templates selected - Data connectors configured - Workflows simplified - Documentation customized\n\nOutput ✅\nCountry X receives: - Working code for their context - Documentation in their language - Training materials - Validation tools - Support for updates"
+  },
+  {
+    "objectID": "llm_capacity_building.html#why-this-matters",
+    "href": "llm_capacity_building.html#why-this-matters",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Why This Matters",
+    "text": "Why This Matters\n\nGlobal Impact 🌍\n\nDemocratize GHG inventory capacity - Make it accessible to all countries\nReduce barriers to UNFCCC compliance - Lower technical and financial hurdles\nEnable data-driven climate policy globally - Better data → Better decisions\nStandardize methodologies - While respecting local context and needs\n\n\n\nTechnical Innovation 💡\n\nLLM as code generation engine - Novel application of AI to climate tools\nAutomated documentation & training - Scale capacity building efforts\nContinuous improvement - Learn from global usage patterns\nQuality control through templates - Validated code, not hallucinations"
+  },
+  {
+    "objectID": "llm_capacity_building.html#critical-challenges-to-address",
+    "href": "llm_capacity_building.html#critical-challenges-to-address",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Critical Challenges to Address",
+    "text": "Critical Challenges to Address\n\n\n\n\n\n\n⚠️ Validation & Quality Control\n\n\n\nLLM-generated code must be rigorously validated. Human expertise remains essential for methodology review and results verification.\n\n\n\n\n\n\n\n\n⚠️ Methodological Soundness\n\n\n\nIPCC guidelines are complex. Templates must enforce correct methodology and prevent shortcuts that compromise accuracy.\n\n\n\n\n\n\n\n\n⚠️ Data Source Variability\n\n\n\nEvery country has unique data landscapes. Adapters must be flexible yet robust enough to handle diverse formats and quality levels.\n\n\n\n\n\n\n\n\n⚠️ Capacity Building Beyond Code\n\n\n\nCode alone isn’t enough. Countries need training, institutional development, and ongoing support to maintain their systems."
+  },
+  {
+    "objectID": "llm_capacity_building.html#roadmap-to-reality",
+    "href": "llm_capacity_building.html#roadmap-to-reality",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Roadmap to Reality",
+    "text": "Roadmap to Reality\n\n\n\n\n\n\nCritical Foundation\n\n\n\nWe can’t teach other countries to build good inventory systems until we’ve proven our own approach works. Year 1 is about building U.S. infrastructure right—that foundation becomes the template for global capacity building.\n\n\nYear 1: Build & Validate U.S. System - Establish robust data infrastructure - Document every decision and pattern - Create reusable templates - Prove reproducibility and transparency\nYear 2: Extract & Pilot - Extract templates from U.S. system - Develop LLM integration - Pilot with 2-3 partner countries - Iterate based on real-world feedback\nYear 3: Refine & Expand - Refine system based on lessons learned - Build partnership network - Prepare for broader deployment - Engage with UNFCCC/development organizations\nYear 4+: Scale Globally - Deploy to additional countries - Continuous improvement cycle - Establish as international standard - Support long-term maintenance"
+  },
+  {
+    "objectID": "llm_capacity_building.html#potential-partners-funders",
+    "href": "llm_capacity_building.html#potential-partners-funders",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Potential Partners & Funders",
+    "text": "Potential Partners & Funders\nInternational Organizations: - UNFCCC Secretariat (Enhanced Transparency Framework) - Global Environment Facility (CBIT funding) - UNEP (Transparency programs) - World Bank / Regional Development Banks\nBilateral Aid: - U.S. State Department (climate finance) - USAID (development assistance) - European bilateral agencies\nFoundations: - Climate foundations focused on transparency - Technology for development funders\nTechnical Partners: - Greenhouse Gas Management Institute - World Resources Institute - Academic institutions"
+  },
+  {
+    "objectID": "llm_capacity_building.html#the-demand-is-real",
+    "href": "llm_capacity_building.html#the-demand-is-real",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "The Demand Is Real",
+    "text": "The Demand Is Real\nRecent research and UNFCCC reporting show:\n\nMore than half of developing countries struggle to report emissions reliably\nEnhanced Transparency Framework (2024) creates urgent need for capacity\n80 countries have sought CBIT funding, but gaps remain\nCommon challenges: Data systems, institutional capacity, technical expertise\n\nThis innovation addresses a documented, urgent, global need with significant funding already allocated."
+  },
+  {
+    "objectID": "llm_capacity_building.html#key-success-factors",
+    "href": "llm_capacity_building.html#key-success-factors",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Key Success Factors",
+    "text": "Key Success Factors\nFor this vision to succeed, we need:\n\n✅ Solid U.S. foundation - Can’t export what we haven’t proven works\n✅ Well-documented templates - Every decision and pattern captured\n✅ Rigorous validation - Quality control is non-negotiable\n✅ Partnership development - Work with international organizations\n✅ Sustained funding - Multi-year commitment required\n✅ User feedback loops - Learn from real-world deployment"
+  },
+  {
+    "objectID": "llm_capacity_building.html#vision-statement",
+    "href": "llm_capacity_building.html#vision-statement",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Vision Statement",
+    "text": "Vision Statement\n\n\n\n\n\n\nThe Opportunity\n\n\n\n“What if the best way to help countries build GHG inventories isn’t to give them data—but to give them the system that generates their own custom inventory from their own data?”\nThis isn’t just about technology. It’s about democratizing climate transparency and enabling every country to participate meaningfully in global climate action."
+  },
+  {
+    "objectID": "llm_capacity_building.html#next-steps",
+    "href": "llm_capacity_building.html#next-steps",
+    "title": "AI-Powered Global GHG Inventory Capacity Building",
+    "section": "Next Steps",
+    "text": "Next Steps\nIf this vision resonates:\n\nFocus on Year 1 - Build the U.S. system right\nDocument everything - Capture patterns for future templates\nEngage stakeholders - Start conversations with potential partners\nSecure funding - Identify resources for multi-year effort\nBuild expertise - Develop LLM integration capabilities\n\nThis is a 3-5 year journey, but it starts with building our own foundation correctly.\n\nFor questions or to discuss this vision further, please reach out to the project team."
+  }
+]

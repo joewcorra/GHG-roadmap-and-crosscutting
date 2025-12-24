@@ -7,10 +7,6 @@ format:
     toc: true
     toc-depth: 2
     theme: cosmo
-  pdf:
-    toc: true
-    colorlinks: true
-
 execute:
   echo: false
   warning: false
@@ -153,35 +149,19 @@ With the discontinuation of the official EPA inventory compilation, we face the 
 
 As your data system developer, my role is to create infrastructure that empowers each source lead to do their best work while ensuring the overall inventory is coherent, reproducible, and maintainable.
 
-## Why Data Infrastructure First?
-
-A well-designed data system from day one:
-
--   **Prevents technical debt** - Fixing bad infrastructure later is 10x harder than building it right initially
-
--   **Enables scalability** - Clean foundations allow the inventory to grow without breaking
-
--   **Ensures reproducibility** - Every calculation is traceable from the start, not reconstructed later
-
--   **Saves time** - Good infrastructure accelerates work; bad infrastructure creates endless friction
-
--   **Builds credibility** - Transparent, well-documented systems earn trust that spreadsheets never will
-
-**The inventory IS the data system.** The quality of our emissions estimates is inseparable from the quality of our data infrastructure. Getting this right from the beginning is not optional—it's the work itself.
-
 ## Four Guiding Principles
 
 ::::::::: two-column
 ::::: {.principle-card .blue}
 ::: principle-title
-🡆 Simplicity First
+🡆 Infrastructure First
 :::
 
 ::: principle-subtitle
 Minimize Complexity, Maximize Utility
 :::
 
-We will adopt only solutions that directly serve our mission of producing a credible, transparent inventory. Every tool or process must answer: *Does this make compilation easier, faster, more accurate, or more transparent?*
+A well-designed data system from day one prevents technical debt, ensures scalability and reproducibility, and saves time in the long run. Good infrastructure accelerates work; bad infrastructure creates endless friction.
 :::::
 
 ::::: {.principle-card .green}
@@ -193,7 +173,7 @@ We will adopt only solutions that directly serve our mission of producing a cred
 Learn from the Source Leads
 :::
 
-Built for you, not imposed on you. Focus on your work, not data housekeeping. Your domain expertise will guide all technical implementation decisions.
+Built for you, not imposed on you. Focus on your work, not data housekeeping and chasing errors in spreadsheets. Your domain expertise will guide all technical implementation decisions.
 :::::
 :::::::::
 
@@ -207,7 +187,7 @@ Built for you, not imposed on you. Focus on your work, not data housekeeping. Yo
 Build, Learn, Improve
 :::
 
-Start minimal, deploy quickly, gather feedback continuously, and improve based on real-world use.
+Start simple, deploy quickly, gather feedback continuously, and improve based on real-world use. Add new solutions when needed, discard what doesn't work, make room for new ideas. Every tool or process must answer: *Does this make compilation easier, faster, more accurate, or more transparent?*
 :::::
 
 ::::: {.principle-card .orange}
@@ -219,14 +199,14 @@ Start minimal, deploy quickly, gather feedback continuously, and improve based o
 Building Resilience Through Openness
 :::
 
-Every step of data retrieval, transformation, aggregation, and calculation will be documented and traceable.
+Every step of data retrieval, transformation, aggregation, and calculation will be documented and traceable, building a foundation for future improvements. Our goal is not next year's Inventory–it's *every* Inventory, every year.
 :::::
 :::::::::
 
 ## Development Roadmap
 
 ::: phase-box
-[Phase 1]{.phase-label .blue} **Discovery** (Weeks 1-TBD) — Meet with sector leads, document workflows, identify priorities
+[Phase 1]{.phase-label .blue} **Discovery** (Weeks 1-TBD) — Meet with leads, document workflows, set priorities
 :::
 
 ::: phase-box
@@ -241,10 +221,10 @@ Every step of data retrieval, transformation, aggregation, and calculation will 
 [Phase 4]{.phase-label .orange} **Operations** (Ongoing) — Maintain, improve, adapt, and ensure long-term sustainability
 :::
 
-## Technical Approach: Start Simple
+## Technical Approach: Foundations
 
-::::::::::::::: two-column
-:::::::: tech-box
+::::::::::::: two-column
+::::::: tech-box
 ::: tech-title
 🗄️ Our Foundation
 :::
@@ -254,25 +234,21 @@ Every step of data retrieval, transformation, aggregation, and calculation will 
 :::
 
 ::: check-item
-**Organized CSVs + [{pins}](https://pins.rstudio.com)** for transparent data storage
+**Organized CSVs** for transparent data storage
 :::
 
 ::: check-item
 [**Git**](https://git-scm.com) for version control and collaboration
 :::
+:::::::
 
-::: check-item
-[**{roxygen2}**](https://roxygen2.r-lib.org) for automated documentation and reproducibility
-:::
-::::::::
-
-:::::::: tech-box
+::::::: tech-box
 ::: tech-title
-🎯 Why Start Simple?
+🎯 Start Simple
 :::
 
 ::: arrow-item
-Our data probably doesn't need complex databases
+Our data may not require need complex databases
 :::
 
 ::: arrow-item
@@ -280,73 +256,76 @@ Simple joins (2–4 tables) work great with R's tidyverse tools
 :::
 
 ::: arrow-item
-CSVs are transparent and git-friendly
-:::
-
-::: arrow-item
 [Add complexity only as needed](https://johncandeto.com/information-flow/research-john-gall-galls-law "Gall's Law: A complex system that works is invariably found to have evolved from a simple system that worked. A complex system designed from scratch never works and cannot be patched up to make it work. You have to start over with a working simple system.").
 :::
-::::::::
-:::::::::::::::
+:::::::
+:::::::::::::
 
 **Key Insight:** We're optimizing for maintainability, transparency, and resilience. Modern R handles your data volumes easily, and CSV files ensure that anyone can inspect, verify, and trust our inputs.
 
-## Success Looks Like...
+## Current Toolkit and Future Capabilities
 
-:::::::::::::::: success-grid
+::::::::: success-grid
 :::: success-box
 ::: success-title
-Efficiency
+Available Now
 :::
 
-Compilation takes less time and tedium than before–no more copy-pasting in Excel
+Centralized communication and issue resolution via GitHub
+
+Data pipelines for workflow management
+
+Coded data pulls via API and webscraping
+
+Scheduled data retrieval
+
+Automated metadata labeling
+
+Integrated data dictionary for data cleaning
+
+LLM-driven data harmonization tool
 ::::
 
 :::: success-box
 ::: success-title
-Transparency
+In Development
 :::
 
-Results are easier to explain and verify–documentation is automatically produced for all steps
+Automatic unit conversion
+
+"Unitless" internal calculations
+
+Automated code and workflow documentation
+
+Automated figure and table generation
+
+Scheduled, automated Quarto reporting
 ::::
 
 :::: success-box
 ::: success-title
-Adaptability
+Future Options
 :::
 
-Quick response to data and methodology revisions
+Column-oriented relational database system
+
+Centralized Data Hub to manage all data storage and retrieval
+
+Interactive data exploration dashboards
+
+Automated QA/QC tools
+
+Cloud deployment
+
+Advanced modeling including Monte Carlo simulations
+
+GIS analysis tools
 ::::
+:::::::::
 
-:::: success-box
-::: success-title
-Accessibility
-:::
+## What I Will Need From the Team
 
-New team members get up to speed quickly
-::::
-
-:::: success-box
-::: success-title
-Empowerment
-:::
-
-System serves the team, not constrains it–we can add stuff that works and discard what doesn't
-::::
-
-:::: success-box
-::: success-title
-Resilience
-:::
-
-We will build a framework not just for this year's Inventory, but every Inventory
-::::
-:::::
-::::::::::::::::
-
-## What I Need From the Team
-
--   **Time** for initial discovery conversations (1–2 hours per source lead)
+-   **Time** for initial discovery conversations
 -   **Honesty** about what works and what doesn't in your current workflow
 -   **Patience** as we iterate toward better solutions
 -   **Feedback** when something isn't working as expected
