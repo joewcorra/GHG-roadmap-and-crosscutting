@@ -1,6 +1,6 @@
 ---
 title: "Building a Modern U.S. GHG Inventory Data System"
-subtitle: "Maintaining Continuity, Embracing Opportunity"
+# subtitle: "Maintaining Continuity, Embracing Opportunity"
 
 format:
   html:
@@ -73,7 +73,7 @@ execute:
 }
 
 .success-box {
-  background: linear-gradient(135deg, #3b82f6, #10b981);
+  background: linear-gradient(135deg, #ff7f50, #D8BFD8);
   color: white;
   padding: 20px;
   border-radius: 8px;
@@ -145,11 +145,11 @@ execute:
 
 ## Our Challenge and Opportunity
 
-With the discontinuation of the official EPA inventory compilation, we face the challenge of maintaining continuity in U.S. emissions tracking while seizing the opportunity to rebuild our system using modern practices that can serve the climate community for decades.
+With the presumed suspension of the official EPA inventory compilation, we face the challenge of maintaining continuity in U.S. greenhouse gas emissions tracking. This moment provides an opportunity to rebuild our system using modern practices that can serve the climate science for years to come.
 
-As your data system developer, my role is to create infrastructure that empowers each source lead to do their best work while ensuring the overall inventory is coherent, reproducible, and maintainable.
+Previously, my role was to lead the creation of a modern data infrastructure, and I hope to continue this essential work. This data infrastructure will empower each source lead to do their best work while ensuring the overall inventory is coherent, reproducible, and maintainable.
 
-## Four Guiding Principles
+## My Four Guiding Principles
 
 ::::::::: two-column
 ::::: {.principle-card .blue}
@@ -161,7 +161,7 @@ As your data system developer, my role is to create infrastructure that empowers
 Minimize Complexity, Maximize Utility
 :::
 
-A well-designed data system from day one prevents technical debt, ensures scalability and reproducibility, and saves time in the long run. Good infrastructure accelerates work; bad infrastructure creates endless friction.
+A well-designed data system from day one prevents technical debt, ensures scalability and reproducibility, and saves time in the long run. Good infrastructure accelerates work.
 :::::
 
 ::::: {.principle-card .green}
@@ -187,7 +187,7 @@ Built for you, not imposed on you. Focus on your work, not data housekeeping and
 Build, Learn, Improve
 :::
 
-Start simple, deploy quickly, gather feedback continuously, and improve based on real-world use. Add new solutions when needed, discard what doesn't work, make room for new ideas. Every tool or process must answer: *Does this make compilation easier, faster, more accurate, or more transparent?*
+Start simple, deploy quickly, gather feedback continuously, and improve based on real-world use. Add new solutions when needed, discard what doesn't work, make room for new ideas.
 :::::
 
 ::::: {.principle-card .orange}
@@ -199,22 +199,24 @@ Start simple, deploy quickly, gather feedback continuously, and improve based on
 Building Resilience Through Openness
 :::
 
-Every step of data retrieval, transformation, aggregation, and calculation will be documented and traceable, building a foundation for future improvements. Our goal is not next year's Inventory–it's *every* Inventory, every year.
+Every step of data retrieval and transformation will be documented and traceable, building a foundation for future improvements. Our goal is not next year's Inventory–it's *every* Inventory, every year.
 :::::
 :::::::::
 
 ## Development Roadmap
 
+Timeline TBD
+
 ::: phase-box
-[Phase 1]{.phase-label .blue} **Discovery** (Weeks 1-TBD) — Meet with leads, document workflows, set priorities
+[Phase 1]{.phase-label .blue} **Discovery** (Weeks) — Meet with leads, document workflows, set priorities
 :::
 
 ::: phase-box
-[Phase 2]{.phase-label .green} **Pilot** (Months TBD) — Build pilot sector, establish patterns, deliver working results
+[Phase 2]{.phase-label .green} **Pilot** (Months) — Build pilot sector, establish patterns, deliver working results
 :::
 
 ::: phase-box
-[Phase 3]{.phase-label .purple} **Expansion** (Months TBD) — Extend to additional sectors, refine based on lessons learned
+[Phase 3]{.phase-label .purple} **Expansion** (Months) — Extend to additional sectors, refine based on lessons learned
 :::
 
 ::: phase-box
@@ -248,7 +250,7 @@ Every step of data retrieval, transformation, aggregation, and calculation will 
 :::
 
 ::: arrow-item
-Our data may not require need complex databases
+Our data may not require complex SQL databases
 :::
 
 ::: arrow-item
@@ -256,14 +258,16 @@ Simple joins (2–4 tables) work great with R's tidyverse tools
 :::
 
 ::: arrow-item
-[Add complexity only as needed](https://johncandeto.com/information-flow/research-john-gall-galls-law "Gall's Law: A complex system that works is invariably found to have evolved from a simple system that worked. A complex system designed from scratch never works and cannot be patched up to make it work. You have to start over with a working simple system.").
+[Add complexity only as needed](https://principles-wiki.net/principles:gall_s_law "Gall's Law: A complex system that works is invariably found to have evolved from a simple system that worked. A complex system designed from scratch never works and cannot be patched up to make it work. You have to start over with a working simple system.").
 :::
 :::::::
 :::::::::::::
 
-**Key Insight:** We're optimizing for maintainability, transparency, and resilience. Modern R handles your data volumes easily, and CSV files ensure that anyone can inspect, verify, and trust our inputs.
+**Key Insight:** We're optimizing for maintainability, transparency, and resilience. Modern R handles your data volumes easily, and CSV files ensure that anyone can inspect, verify, and trust our inputs. The team can decide if more complex database solutions are required.
 
 ## Current Toolkit and Future Capabilities
+
+Contact me for further details about any of the tools listed below.
 
 ::::::::: success-grid
 :::: success-box
@@ -271,55 +275,55 @@ Simple joins (2–4 tables) work great with R's tidyverse tools
 Available Now
 :::
 
-Centralized communication and issue resolution via GitHub
+[Centralized communication and issue resolution via GitHub](https://docs.github.com/en/issues/planning-and-tracking-with-projects/learning-about-projects/about-projects "GitHub Projects")
 
-Data pipelines for workflow management
+[Data pipelines for workflow management](https://books.ropensci.org/targets/)
 
-Coded data pulls via API and webscraping
+Coded data retrieval via [API](https://httr2.r-lib.org) and [webscraping](https://rvest.tidyverse.org)
 
-Scheduled data retrieval
+[Scheduled data pulls](https://docs.ropensci.org/tarchetypes/reference/tar_age.html)
 
-Automated metadata labeling
+[Automated metadata labeling](https://haven.tidyverse.org/reference/labelled.html)
 
-Integrated data dictionary for data cleaning
+[Integrated data dictionary for data cleaning](https://github.com/joewcorra/syrinx "{syrinx} is the custom package that I built")
 
-LLM-driven data harmonization tool
+[LLM-driven data harmonization tool](https://github.com/joewcorra/syrinx "{syrinx} is the custom package that I built")
 ::::
 
 :::: success-box
 ::: success-title
-In Development
+Planned and Under Development
 :::
 
-Automatic unit conversion
+[Automatic unit conversion](https://github.com/r-quantities/units "All input data will be converted to canonical units")
 
 "Unitless" internal calculations
 
-Automated code and workflow documentation
+[Automated code and workflow documentation](https://roxygen2.r-lib.org)
 
-Automated figure and table generation
+Automated [figure](https://ggplot2.tidyverse.org) and [table](https://gt.rstudio.com) generation
 
-Scheduled, automated Quarto reporting
+Scheduled, automated [Quarto](https://quarto.org) reporting
 ::::
 
 :::: success-box
 ::: success-title
-Future Options
+Future Options and Decision Points
 :::
 
-Column-oriented relational database system
+Column-oriented relational database system (e.g., [DuckDB](https://duckdb.org))
 
 Centralized Data Hub to manage all data storage and retrieval
 
-Interactive data exploration dashboards
+[Interactive data exploration dashboards](https://shiny.posit.co/r/articles/build/dashboards/)
 
-Automated QA/QC tools
+[Automated QA/QC tools](https://docs.ropensci.org/assertr/articles/assertr.html)
 
 Cloud deployment
 
-Advanced modeling including Monte Carlo simulations
+[Advanced modeling](https://cran.r-project.org/web/packages/propagate/index.html) including [Monte Carlo simulations](https://cran.r-universe.dev/mc2d)
 
-GIS analysis tools
+[GIS analysis tools](https://guides.library.columbia.edu/geotools/R)
 ::::
 :::::::::
 
