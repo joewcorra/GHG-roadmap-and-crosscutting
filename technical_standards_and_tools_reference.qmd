@@ -5,7 +5,7 @@ date: last-modified
 
 ## Overview
 
-This document describes the computational tools, packages, platforms, and workflows used in the compilation of the U.S. Greenhouse Gas Inventory. It is intended as an internal reference for contributors and collaborators.
+This document describes the computational tools, packages, platforms, and workflows used in the compilation of the U.S. Greenhouse Gas Inventory. It is intended as an internal reference for contributors and documents both the current technical stack and future architectural decisions.
 
 ---
 
@@ -14,6 +14,126 @@ This document describes the computational tools, packages, platforms, and workfl
 | Tool | Purpose |
 |------|---------|
 | [R](https://www.r-project.org/) | Primary programming language for all inventory calculations, data processing, and reporting |
+
+---
+
+## GitHub Repository Architecture
+
+### Organizational Structure
+
+The project uses a **modular repository structure** with separate repos for each major GHG source category, coordinated through an overarching GitHub Project board.
+
+#### Repository Structure
+
+```         
+github.com/your-org/
+├── ghg-planning/ # GitHub Project & cross-cutting issues
+├── ghg-energy/ # IPCC Category 1: Energy
+├── ghg-ippu/ # IPCC Category 2: Industrial Processes
+├── ghg-agriculture/ # IPCC Category 3: Agriculture
+├── ghg-lulucf/ # IPCC Category 4: Land Use
+├── ghg-waste/ # IPCC Category 5: Waste
+├── ghg-core/ # Shared utilities & documentation
+└── syrinx/ # Internal data harmonization package
+```
+
+#### Rationale for Multi-Repo Approach
+
+**Advantages:**
+- **Source independence**: Teams can work without conflicts
+- **Clear ownership**: Each source lead owns their repository
+- **Separate release cycles**: Update sources independently
+- **Coordination via GitHub Project**: Cross-repo task tracking, unified timeline and milestones, dependencies between sectors visible, overall inventory status dashboard
+
+### Repository Template Structure
+
+Each sector repository follows a consistent structure:
+
+```         
+ghg-energy/
+├── README.md # Sector overview & quick start
+├── METHODOLOGY.md # Detailed methodology documentation
+├── data/
+│ ├── reference/ # Emission factors, lookups
+│ │ ├── emission_factors.csv
+│ │ ├── gwp_values.csv
+│ │ └── fuel_classifications.csv
+│ ├── activity/ # Processed activity data (git-ignored if large)
+│ └── calculated/ # Results (date-stamped)
+├── data-raw/ # Original downloads (git-ignored)
+├── R/
+│ ├── 01_download.R # Data acquisition scripts
+│ ├── 02_clean.R # Data cleaning and harmonization
+│ ├── 03_calculate.R # Emission calculations
+│ ├── 04_validate.R # QA/QC checks
+│ └── functions/ # Helper functions
+│ ├── load_data.R
+│ ├── calculations.R
+│ └── validation.R
+├── tests/
+│ ├── testthat/ # Unit tests
+│ └── test_calculations.R
+├── outputs/
+│ ├── reports/ # Generated reports
+│ └── figures/ # Plots and visualizations
+├── docs/ # Additional documentation
+│ ├── data_dictionary.md
+│ └── changelog.md
+├── .github/
+│ ├── workflows/ # GitHub Actions (CI/CD)
+│ │ └── run_tests.yml
+│ └── ISSUE_TEMPLATE/
+├── renv.lock # R package dependencies
+└── _targets.R # Targets workflow (optional)
+```
+
+### The `ghg-core` Repository
+
+Central repository for shared resources:
+
+```         
+ghg-core/
+├── README.md
+├── reference_data/ # Cross-sector reference data
+│ ├── ipcc_categories.csv # Complete IPCC hierarchy
+│ ├── gwp_ar5.csv # Global warming potentials
+│ ├── gwp_ar6.csv
+│ ├── state_codes.csv
+│ └── region_mappings.csv
+├── templates/ # Templates for sector repos
+│ ├── repo_template/
+│ └── script_templates/
+├── documentation/
+│ ├── methodology_standards.md # Cross-sector standards
+│ ├── qaqc_procedures.md
+│ ├── naming_conventions.md
+│ └── git_workflow.md
+├── R/
+│ └── shared_functions/ # Functions used across sectors
+└── tests/
+```
+
+### GitHub Project Board
+
+**Project Name:** U.S. GHG Inventory Development
+
+**Board Structure:**
+
+```         
+Columns:
+├── Backlog # Future work
+├── Ready # Prioritized and scoped
+├── In Progress # Active development
+├── Review # Code review / validation
+├── Done # Completed this sprint
+└── Blocked # Waiting on dependencies
+```
+
+**Issue Labels (cross-repo):**
+- `sector:energy`, `sector:agriculture`, etc.
+- `priority:high`, `priority:medium`, `priority:low`
+- `type:bug`, `type:feature`, `type:documentation`
+- `status:blocked`, `status:ready-for-review`
 
 ---
 
@@ -27,6 +147,7 @@ This document describes the computational tools, packages, platforms, and workfl
 | [`{tarchetypes}`](https://docs.ropensci.org/tarchetypes/) | Helper functions extending `{targets}` for common pipeline patterns |
 | [`{pins}`](https://pins.rstudio.com/) | Versioned data retrieval from shared boards |
 | [`{renv}`](https://rstudio.github.io/renv/) | Records exact package versions to ensure collaborators reproduce the same R environment |
+| [`{here}`](https://here.r-lib.org/) | Path management |
 
 ### Data Manipulation
 
@@ -34,6 +155,10 @@ This document describes the computational tools, packages, platforms, and workfl
 |---------|---------|
 | [`{tidyverse}`](https://www.tidyverse.org/) | Core suite for data manipulation, transformation, and functional programming; key packages include `{dplyr}`, `{purrr}`, `{lubridate}`, and `{tidyr}` |
 | [`{janitor}`](https://sfirke.github.io/janitor/) | Data cleaning utilities; many functions are wrapped in `{syrinx}` but also used directly |
+| [`{readxl}`](https://readxl.tidyverse.org/) | Excel file import |
+| [`{jsonlite}`](https://cran.r-project.org/web/packages/jsonlite/) | Read and create JSON files |
+| [`{rvest}`](https://rvest.tidyverse.org/) | Web scraping |
+| [`{httr}`](https://httr.r-lib.org/) | Work with HTML data |
 
 ### Testing & Validation
 
@@ -41,19 +166,112 @@ This document describes the computational tools, packages, platforms, and workfl
 |---------|---------|
 | [`{testthat}`](https://testthat.r-lib.org/) | Unit testing for inventory functions; verifies that calculations return expected outputs |
 | [`{pointblank}`](https://rstudio.github.io/pointblank/) | Data validation; checks that activity data and emissions meet defined expectations at key pipeline stages |
+| [`{assertr}`](https://docs.ropensci.org/assertr/) | Data quality checks |
+| [`{validate}`](https://data-cleaning.github.io/validate/) | Rule-based validation |
 
 ### Visualization & Reporting
 
 | Package | Purpose |
 |---------|---------|
 | [`{ggplot2}`](https://ggplot2.tidyverse.org/) | Publication-quality plots and figures |
+| [`{patchwork}`](https://patchwork.data-imaginist.com/) | Compose multiple plots |
+| [`{scales}`](https://scales.r-lib.org/) | Scale functions |
 | [`{gt}`](https://gt.rstudio.com/) | Formatted summary tables for reports and documentation |
+| [`{knitr}`](https://yihui.org/knitr/) | Report generation |
+| [`{kableExtra}`](https://haozhu233.github.io/kableExtra/) | Table formatting |
+
+### Spatial Data (for LULUCF)
+
+| Package | Purpose |
+|---------|---------|
+| [`{sf}`](https://r-spatial.github.io/sf/) | Spatial data handling |
+| [`{terra}`](https://rspatial.org/terra/) | Raster data |
+| [`{mapview}`](https://r-spatial.github.io/mapview/) | Interactive maps |
+
+### Database (Future Phase)
+
+| Package | Purpose |
+|---------|---------|
+| [`{DBI}`](https://dbi.r-dbi.org/) | Database interface |
+| [`{duckdb}`](https://duckdb.org/docs/api/r) | DuckDB connection (for future implementation) |
 
 ### Internal
 
 | Package | Purpose |
 |---------|---------|
-| `{syrinx}` | Internal package; provides `pre_clean()` and other project-specific utilities wrapping common functions |
+| `{syrinx}` | Internal package; provides data harmonization, validation, and unit conversion utilities |
+
+#### The `syrinx` Package
+
+**Purpose:** Internal package for standardizing data cleaning and harmonization across all sectors.
+
+**Key Functions:**
+
+```r
+# Data harmonization and validation
+syrinx::pre_clean() # Convenience function; wraps several data cleaning operations
+syrinx::use_dictionary() # Consult dictionary to validate input data
+syrinx::llm_dictionary() # LLM-generated corrections for invalid data
+
+# Common transformations
+syrinx::apply_metadata_labels() # Label dataframe columns 
+syrinx::convert_units_in() # Convert input data to canonical units
+syrinx::convert_units_out() # Convert output data to desired units
+```
+
+**Package Structure:**
+
+```         
+syrinx/
+├── DESCRIPTION
+├── NAMESPACE
+├── R/
+│ ├── harmonize.R
+│ ├── transform.R
+│ └── utils.R
+├── data/ # Built-in reference data
+│ ├── standard_units.rda
+│ └── standard_columns.rda
+├── tests/
+│ └── testthat/
+├── man/ # Documentation
+├── vignettes/ # Usage examples
+│ ├── getting_started.Rmd
+│ └── validation_guide.Rmd
+└── README.md
+```
+
+**Installation:**
+
+```r
+# From internal repository
+remotes::install_github("joewcorra/syrinx")
+
+# Or if using private GitHub
+remotes::install_github("joewcorra/syrinx", 
+                        auth_token = Sys.getenv("GITHUB_PAT"))
+```
+
+### Package Management Strategy
+
+**Using `renv` for Reproducibility:**
+
+Each sector repository includes `renv.lock` to freeze package versions:
+
+```r
+# Initialize renv in a new sector repo
+renv::init()
+
+# Install packages
+install.packages(c("tidyverse", "here", "testthat"))
+remotes::install_github("joewcorra/syrinx")
+
+# Snapshot current state
+renv::snapshot()
+
+# Others can restore exact environment
+renv::restore()
+```
 
 ---
 
@@ -63,6 +281,8 @@ This document describes the computational tools, packages, platforms, and workfl
 |------|---------|
 | [Quarto](https://quarto.org/) | Reproducible document authoring; renders methodology references, reports, and this site |
 | [Mermaid](https://mermaid.js.org/) | Diagram-as-code syntax for flowcharts and process diagrams, natively supported in Quarto |
+| [`{roxygen2}`](https://roxygen2.r-lib.org/) | Automated documentation for R packages |
+| [`{ellmer}`](https://ellmer.tidyverse.org/) | Leverage LLMs via API for documentation assistance |
 
 ---
 
@@ -72,10 +292,253 @@ This document describes the computational tools, packages, platforms, and workfl
 |------|---------|
 | [Git](https://git-scm.com/) | Version control for all code and documentation |
 | [GitHub](https://github.com/) | Remote repository hosting and code collaboration |
-| [GitHub Issues](https://docs.github.com/en/issues) | Tracking bugs, methodology questions, and deferred decisions; cross-cutting issues filed in `ghg-planning`, source-specific issues in chapter repos |
+| [GitHub Issues](https://docs.github.com/en/issues) | Tracking bugs, methodology questions, and deferred decisions; cross-cutting issues filed in `ghg-planning`, source-specific issues in chapter-specific repos |
 | [GitHub Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects) | Unified kanban board spanning all inventory repos |
 | [GitHub Actions](https://docs.github.com/en/actions) | Automated workflows; runs `{testthat}` on push and renders this site to GitHub Pages |
 | [GitHub Pages](https://pages.github.com/) | Hosts the rendered version of this planning site |
+
+---
+
+## Future Decision Points
+
+### Phase 1 Decisions (Months 0-6)
+
+#### 1.1 Workflow Orchestration: {targets} vs Scripts
+
+**Decision:** Whether to implement `{targets}` pipeline management
+
+**Current Approach:** Sequential R scripts (01_download.R, 02_clean.R, etc.)
+
+**Consider {targets} when:**
+- Scripts become complex with many interdependencies
+- Rebuilding everything is taking too long
+- Need fine-grained caching of intermediate results
+- Multiple people contributing to the same pipeline
+
+**Evaluation Criteria:**
+- Is manual script execution becoming error-prone?
+- Are we re-running expensive calculations unnecessarily?
+- Would the learning curve justify the benefits?
+
+**Timeline:** Re-evaluate after MVP (Month 4)
+
+---
+
+#### 1.2 Testing Strategy: Depth vs Speed
+
+**Decision:** How comprehensive should automated testing be?
+
+**Current Approach:** Basic unit tests for calculation functions
+
+**Options:**
+- **Minimal:** Test core calculations only
+- **Moderate:** Add data validation tests
+- **Comprehensive:** Include integration tests, benchmark tests
+
+**Consider expansion when:**
+- Bugs are discovered in production
+- Onboarding new team members who break things
+- Preparing for external review
+
+**Timeline:** Decide by Month 3 based on bug frequency
+
+---
+
+### Phase 2 Decisions (Months 6-12)
+
+#### 2.1 Database Implementation: DuckDB
+
+**Decision:** When/whether to migrate from CSVs to DuckDB
+
+**Current Approach:** Well-organized CSV files
+
+**Triggers for migration:**
+- Query performance becomes problematic (joins taking >1 minute)
+- File management becomes unwieldy (>100 CSV files)
+- Need for referential integrity is critical
+- Multiple concurrent access patterns
+
+**Migration Path:**
+
+```r
+# Phase 1: Read CSVs (current)
+data <- read_csv("data/activity/electricity.csv")
+
+# Phase 2: Add DuckDB option
+con <- dbConnect(duckdb::duckdb(), "ghg_inventory.duckdb")
+data <- dbReadTable(con, "electricity")
+
+# Functions remain unchanged
+calculate_emissions(data, emission_factors)
+```
+
+**Implementation Steps:**
+1. Pilot DuckDB with one sector
+2. Benchmark performance vs CSVs
+3. Evaluate team comfort level
+4. Decide to expand or revert
+
+**Timeline:** Evaluate Month 8, implement Month 9-10 if approved
+
+---
+
+#### 2.2 Centralized Data Acquisition Hub
+
+**Decision:** Build automated data download/update system
+
+**Current Approach:** Manual downloads, sector-by-sector
+
+**Future Vision:**
+
+```         
+ghg-data-hub/
+├── R/
+│ ├── download_eia.R # EIA API wrapper
+│ ├── download_epa.R # EPA GHGRP
+│ ├── download_usda.R # USDA NASS
+│ └── schedule_updates.R # Automated scheduling
+├── data/
+│ ├── raw/ # Downloaded files
+│ └── metadata/ # Download logs
+└── logs/
+    └── download_log.csv # Audit trail
+```
+
+**Features:**
+- Centralized data source definitions
+- Automated update checks
+- Version control of raw data
+- Notification system for new data
+- Consistent metadata tracking
+
+**Triggers for implementation:**
+- Manual downloads becoming bottleneck
+- Missing data updates causing delays
+- Multiple sectors using same data sources
+- Need for systematic data provenance tracking
+
+**Dependencies:**
+- API access established with agencies
+- Data source landscape well-understood
+- Team agreement on update frequency
+
+**Timeline:** Design Month 7, pilot Month 10-12
+
+---
+
+#### 2.3 Web-Based Data Portal
+
+**Decision:** Create public-facing data access system
+
+**Options:**
+- **Shiny Dashboard:** Interactive exploration
+- **API:** Programmatic access
+- **Static Website:** Documentation + download links
+- **All of the above:** Comprehensive platform
+
+**Consider when:**
+- Inventory is stable and validated
+- External users requesting data access
+- Need to demonstrate transparency
+- Ready for public scrutiny
+
+**Timeline:** Not before Month 12 (Phase 3+)
+
+---
+
+### Phase 3+ Decisions (Year 2+)
+
+#### 3.1 Advanced Uncertainty Quantification
+
+**Decision:** Implement Monte Carlo simulation
+
+**Current Approach:** Use published uncertainty ranges from EPA
+
+**Enhanced Approach:**
+- Probability distributions for emission factors
+- Correlation structures between parameters
+- Propagation through calculations
+- Full uncertainty analysis per IPCC guidelines
+
+**Package:** `{mc2d}` or `{propagate}`
+
+**Triggers:**
+- Required for peer review or publication
+- IPCC reporting requirements
+- Stakeholder requests for uncertainty bounds
+
+---
+
+## Decision-Making Framework
+
+### When to Add Complexity
+
+**Ask these questions:**
+
+1. **Does the current simple approach actually cause problems?**
+   - If no → Don't add complexity
+   - If yes → Continue evaluation
+2. **What's the cost of the status quo?**
+   - Time wasted?
+   - Errors introduced?
+   - Opportunities missed?
+3. **What's the cost of the new approach?**
+   - Learning curve?
+   - Maintenance burden?
+   - Technical debt?
+4. **Who benefits and how much?**
+   - Entire team or one person?
+   - Daily impact or occasional?
+   - Critical or nice-to-have?
+5. **Is it reversible?**
+   - Can we go back if it doesn't work?
+   - What's locked in?
+6. **Do we have capacity?**
+   - Time to implement properly?
+   - Skills on the team?
+   - Bandwidth to maintain?
+
+### Decision Authority
+
+**Tech decisions by data system developer:**
+- R package choices
+- Code organization
+- Git workflow details
+- Development tools
+
+**Collaborative decisions:**
+- Database implementation
+- Major workflow changes
+- Data access/sharing policies
+- Public-facing features
+
+**Sector lead decisions:**
+- Sector-specific methodologies
+- Data source selections
+- QA/QC thresholds
+- Reporting priorities
+
+---
+
+## Review Milestones
+
+**Month 3 Review:**
+- Is CSV approach working?
+- Is `syrinx` package valuable?
+- Are GitHub repos effective?
+- Need to adjust course?
+
+**Month 6 Review:**
+- Ready for DuckDB evaluation?
+- Need centralized data hub?
+- Testing strategy adequate?
+- Workflow orchestration needed?
+
+**Month 12 Review:**
+- System meeting goals?
+- What future capabilities to prioritize?
+- Resource needs for Year 2?
+- External engagement strategy?
 
 ---
 
@@ -85,4 +548,26 @@ This document describes the computational tools, packages, platforms, and workfl
 |----------|---------|
 | [IPCC Guidelines for National Greenhouse Gas Inventories](https://www.ipcc-nggip.iges.or.jp/public/2006gl/) | Primary methodological reference for emission factor tiers and calculation approaches |
 | [EPA GHGI Landing Page](https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks) | Official source for published inventory reports and annexes |
-| [UNFCCC CRF Reporter](https://unfccc.int/process-and-meetings/transparency-and-reporting/reporting-and-review-under-the-convention/greenhouse-gas-inventories-annex-i-parties/reporting-requirement
+| [UNFCCC CRF Reporter](https://unfccc.int/process-and-meetings/transparency-and-reporting/reporting-and-review-under-the-convention/greenhouse-gas-inventories-annex-i-parties/reporting-requirements) | Reporting format specifications and submission platform |
+
+---
+
+## Essential Package Documentation
+
+**Key References:**
+- **{tidyverse}:** https://www.tidyverse.org/
+- **{targets}:** https://books.ropensci.org/targets/
+- **{renv}:** https://rstudio.github.io/renv/
+- **{testthat}:** https://testthat.r-lib.org/
+- **{pointblank}:** https://rich-iannone.github.io/pointblank/
+- **{DuckDB}:** https://duckdb.org/docs/api/r
+- **{quarto}:** https://quarto.org/docs/computations/r.html
+
+**Internal Documentation:**
+- **{syrinx} package:** [Link to internal docs when available]
+- **GitHub organization:** [Your organization link]
+- **Team wiki:** [Link to wiki]
+
+---
+
+*This reference document is a living document and will be updated as decisions are made and the system evolves.*
