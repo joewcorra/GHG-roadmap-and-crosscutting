@@ -27,7 +27,7 @@ The project uses a **modular repository structure** with separate repos for each
 
 ```         
 github.com/your-org/
-├── ghg-planning/ # GitHub Project & cross-cutting issues
+├── ghg-roadmap-and-crosscutting/ # Planning & cross-cutting issues
 ├── ghg-energy/ # IPCC Category 1: Energy
 ├── ghg-ippu/ # IPCC Category 2: Industrial Processes
 ├── ghg-agriculture/ # IPCC Category 3: Agriculture
@@ -141,8 +141,8 @@ Columns:
 
 ### Pipeline & Reproducibility
 
-| Package | Purpose |
-|---------|---------|
+|   Package   |   Purpose   |
+|-------------|-------------|
 | [`{targets}`](https://docs.ropensci.org/targets/) | Pipeline orchestration; tracks dependencies and avoids redundant computation |
 | [`{tarchetypes}`](https://docs.ropensci.org/tarchetypes/) | Helper functions extending `{targets}` for common pipeline patterns |
 | [`{pins}`](https://pins.rstudio.com/) | Versioned data retrieval from shared boards |
@@ -151,8 +151,8 @@ Columns:
 
 ### Data Manipulation
 
-| Package | Purpose |
-|---------|---------|
+|   Package   |   Purpose   |
+|-------------|-------------|
 | [`{tidyverse}`](https://www.tidyverse.org/) | Core suite for data manipulation, transformation, and functional programming; key packages include `{dplyr}`, `{purrr}`, `{lubridate}`, and `{tidyr}` |
 | [`{janitor}`](https://sfirke.github.io/janitor/) | Data cleaning utilities; many functions are wrapped in `{syrinx}` but also used directly |
 | [`{readxl}`](https://readxl.tidyverse.org/) | Excel file import |
@@ -162,8 +162,8 @@ Columns:
 
 ### Testing & Validation
 
-| Package | Purpose |
-|---------|---------|
+|   Package   |   Purpose   |
+|-------------|-------------|
 | [`{testthat}`](https://testthat.r-lib.org/) | Unit testing for inventory functions; verifies that calculations return expected outputs |
 | [`{pointblank}`](https://rstudio.github.io/pointblank/) | Data validation; checks that activity data and emissions meet defined expectations at key pipeline stages |
 | [`{assertr}`](https://docs.ropensci.org/assertr/) | Data quality checks |
@@ -171,8 +171,8 @@ Columns:
 
 ### Visualization & Reporting
 
-| Package | Purpose |
-|---------|---------|
+|   Package   |   Purpose   |
+|-------------|-------------|
 | [`{ggplot2}`](https://ggplot2.tidyverse.org/) | Publication-quality plots and figures |
 | [`{patchwork}`](https://patchwork.data-imaginist.com/) | Compose multiple plots |
 | [`{scales}`](https://scales.r-lib.org/) | Scale functions |
@@ -182,23 +182,23 @@ Columns:
 
 ### Spatial Data (for LULUCF)
 
-| Package | Purpose |
-|---------|---------|
+|   Package   |   Purpose   |
+|-------------|-------------|
 | [`{sf}`](https://r-spatial.github.io/sf/) | Spatial data handling |
 | [`{terra}`](https://rspatial.org/terra/) | Raster data |
 | [`{mapview}`](https://r-spatial.github.io/mapview/) | Interactive maps |
 
 ### Database (Future Phase)
 
-| Package | Purpose |
-|---------|---------|
+|   Package   |   Purpose   |
+|-------------|-------------|
 | [`{DBI}`](https://dbi.r-dbi.org/) | Database interface |
 | [`{duckdb}`](https://duckdb.org/docs/api/r) | DuckDB connection (for future implementation) |
 
 ### Internal
 
-| Package | Purpose |
-|---------|---------|
+|   Package   |   Purpose   |
+|-------------|-------------|
 | `{syrinx}` | Internal package; provides data harmonization, validation, and unit conversion utilities |
 
 #### The `syrinx` Package
