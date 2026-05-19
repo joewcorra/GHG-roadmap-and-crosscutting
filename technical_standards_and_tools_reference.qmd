@@ -1,0 +1,88 @@
+--- 
+title: "Technical Standards and Tools Reference"
+date: last-modified
+---
+
+## Overview
+
+This document describes the computational tools, packages, platforms, and workflows used in the compilation of the U.S. Greenhouse Gas Inventory. It is intended as an internal reference for contributors and collaborators.
+
+---
+
+## Core Language
+
+| Tool | Purpose |
+|------|---------|
+| [R](https://www.r-project.org/) | Primary programming language for all inventory calculations, data processing, and reporting |
+
+---
+
+## R Packages
+
+### Pipeline & Reproducibility
+
+| Package | Purpose |
+|---------|---------|
+| [`{targets}`](https://docs.ropensci.org/targets/) | Pipeline orchestration; tracks dependencies and avoids redundant computation |
+| [`{tarchetypes}`](https://docs.ropensci.org/tarchetypes/) | Helper functions extending `{targets}` for common pipeline patterns |
+| [`{pins}`](https://pins.rstudio.com/) | Versioned data retrieval from shared boards |
+| [`{renv}`](https://rstudio.github.io/renv/) | Records exact package versions to ensure collaborators reproduce the same R environment |
+
+### Data Manipulation
+
+| Package | Purpose |
+|---------|---------|
+| [`{tidyverse}`](https://www.tidyverse.org/) | Core suite for data manipulation, transformation, and functional programming; key packages include `{dplyr}`, `{purrr}`, `{lubridate}`, and `{tidyr}` |
+| [`{janitor}`](https://sfirke.github.io/janitor/) | Data cleaning utilities; many functions are wrapped in `{syrinx}` but also used directly |
+
+### Testing & Validation
+
+| Package | Purpose |
+|---------|---------|
+| [`{testthat}`](https://testthat.r-lib.org/) | Unit testing for inventory functions; verifies that calculations return expected outputs |
+| [`{pointblank}`](https://rstudio.github.io/pointblank/) | Data validation; checks that activity data and emissions meet defined expectations at key pipeline stages |
+
+### Visualization & Reporting
+
+| Package | Purpose |
+|---------|---------|
+| [`{ggplot2}`](https://ggplot2.tidyverse.org/) | Publication-quality plots and figures |
+| [`{gt}`](https://gt.rstudio.com/) | Formatted summary tables for reports and documentation |
+
+### Internal
+
+| Package | Purpose |
+|---------|---------|
+| `{syrinx}` | Internal package; provides `pre_clean()` and other project-specific utilities wrapping common functions |
+
+---
+
+## Authoring & Documentation
+
+| Tool | Purpose |
+|------|---------|
+| [Quarto](https://quarto.org/) | Reproducible document authoring; renders methodology references, reports, and this site |
+| [Mermaid](https://mermaid.js.org/) | Diagram-as-code syntax for flowcharts and process diagrams, natively supported in Quarto |
+
+---
+
+## Project Management & Version Control
+
+| Tool | Purpose |
+|------|---------|
+| [Git](https://git-scm.com/) | Version control for all code and documentation |
+| [GitHub](https://github.com/) | Remote repository hosting and code collaboration |
+| [GitHub Issues](https://docs.github.com/en/issues) | Tracking bugs, methodology questions, and deferred decisions; cross-cutting issues filed in `ghg-planning`, source-specific issues in chapter repos |
+| [GitHub Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects) | Unified kanban board spanning all inventory repos |
+| [GitHub Actions](https://docs.github.com/en/actions) | Automated workflows; runs `{testthat}` on push and renders this site to GitHub Pages |
+| [GitHub Pages](https://pages.github.com/) | Hosts the rendered version of this planning site |
+
+---
+
+## Reference Resources
+
+| Resource | Purpose |
+|----------|---------|
+| [IPCC Guidelines for National Greenhouse Gas Inventories](https://www.ipcc-nggip.iges.or.jp/public/2006gl/) | Primary methodological reference for emission factor tiers and calculation approaches |
+| [EPA GHGI Landing Page](https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks) | Official source for published inventory reports and annexes |
+| [UNFCCC CRF Reporter](https://unfccc.int/process-and-meetings/transparency-and-reporting/reporting-and-review-under-the-convention/greenhouse-gas-inventories-annex-i-parties/reporting-requirement
