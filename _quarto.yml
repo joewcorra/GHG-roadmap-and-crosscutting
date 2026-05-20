@@ -8,10 +8,12 @@ website:
     left:
       - text: "Main Proposal"
         href: ghg_proposal.qmd
-      - text: "Technical Addendum"
-        href: technical_addendum.qmd
-      # - text: "Long-Range Vision: Capacity-Building"       
-      #   href: llm_capacity_building.qmd
+      - text: "GHG Inventory Methodology"
+        href: ghg_inventory_methodology.qmd
+      - text: "Technical Standards & Tools"
+        href: technical_standards_and_tools_reference.qmd
+      - text: "LLM Capacity Building"
+        href: llm_capacity_building.qmd
 
 format:
   html:
