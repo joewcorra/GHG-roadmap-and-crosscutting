@@ -304,6 +304,8 @@ Planned and Under Development
 Automated [figure](https://ggplot2.tidyverse.org) and [table](https://gt.rstudio.com) generation
 
 Scheduled, automated [Quarto](https://quarto.org) reporting
+
+[Automated QA/QC tools](https://docs.ropensci.org/assertr/articles/assertr.html)
 ::::
 
 :::: success-box
@@ -316,8 +318,6 @@ Column-oriented relational database system (e.g., [DuckDB](https://duckdb.org))
 Centralized Data Hub to manage all data storage and retrieval
 
 [Interactive data exploration dashboards](https://shiny.posit.co/r/articles/build/dashboards/)
-
-[Automated QA/QC tools](https://docs.ropensci.org/assertr/articles/assertr.html)
 
 Cloud deployment
 

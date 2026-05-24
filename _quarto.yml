@@ -12,8 +12,6 @@ website:
         href: ghg_inventory_methodology.qmd
       - text: "Technical Standards & Tools"
         href: technical_standards_and_tools_reference.qmd
-      - text: "LLM Capacity Building"
-        href: llm_capacity_building.qmd
 
 format:
   html:
