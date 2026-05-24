@@ -143,8 +143,9 @@ Columns:
 
 |   Package   |   Purpose   |
 |-------------|-------------|
-| [`{targets}`](https://docs.ropensci.org/targets/) | Pipeline orchestration; tracks dependencies and avoids redundant computation |
-| [`{tarchetypes}`](https://docs.ropensci.org/tarchetypes/) | Helper functions extending `{targets}` for common pipeline patterns |
+| [`{targets}`](https://docs.ropensci.org/targets/) | Pipeline orchestration; tracks dependencies and avoids redundant computation (optional — see Future Decision Points §1.1) |
+| [`{tarchetypes}`](https://docs.ropensci.org/tarchetypes/) | Helper functions extending `{targets}` for common pipeline patterns (optional — see Future Decision Points §1.1) |
+| [`{furrr}`](https://furrr.futureverse.org/) | Drop-in parallel replacements for `{purrr}` iteration functions via the `{future}` backend |
 | [`{pins}`](https://pins.rstudio.com/) | Versioned data retrieval from shared boards |
 | [`{renv}`](https://rstudio.github.io/renv/) | Records exact package versions to ensure collaborators reproduce the same R environment |
 | [`{here}`](https://here.r-lib.org/) | Path management |
@@ -153,12 +154,23 @@ Columns:
 
 |   Package   |   Purpose   |
 |-------------|-------------|
-| [`{tidyverse}`](https://www.tidyverse.org/) | Core suite for data manipulation, transformation, and functional programming; key packages include `{dplyr}`, `{purrr}`, `{lubridate}`, and `{tidyr}` |
+| [`{tidyverse}`](https://www.tidyverse.org/) | Meta-package loading the core data science suite; installs and attaches all constituent packages together |
+| [`{dplyr}`](https://dplyr.tidyverse.org/) | Core data manipulation verbs: `filter()`, `mutate()`, `summarise()`, `join()` |
+| [`{purrr}`](https://purrr.tidyverse.org/) | Functional programming and iteration over lists and vectors |
+| [`{tidyr}`](https://tidyr.tidyverse.org/) | Reshape and tidy data (`pivot_longer()`, `pivot_wider()`, `nest()`) |
+| [`{readr}`](https://readr.tidyverse.org/) | Fast import of CSV and delimited text files |
+| [`{lubridate}`](https://lubridate.tidyverse.org/) | Date and time parsing and arithmetic |
+| [`{stringr}`](https://stringr.tidyverse.org/) | String detection, extraction, and replacement |
+| [`{forcats}`](https://forcats.tidyverse.org/) | Factor manipulation and level reordering |
+| [`{tibble}`](https://tibble.tidyverse.org/) | Modern data frame with stricter behavior and better printing |
 | [`{janitor}`](https://sfirke.github.io/janitor/) | Data cleaning utilities; many functions are wrapped in `{syrinx}` but also used directly |
-| [`{readxl}`](https://readxl.tidyverse.org/) | Excel file import |
+| [`{labelled}`](https://larmarange.github.io/labelled/) | Variable and value labels compatible with survey/SPSS-style metadata |
+| [`{units}`](https://github.com/r-quantities/units) | Physical unit handling and dimensional analysis; enforces unit-safe calculations and conversions |
+| [`{readxl}`](https://readxl.tidyverse.org/) | Excel file import (read-only) |
+| [`{openxlsx}`](https://ycphs.github.io/openxlsx/) | Excel file read and write without a Java dependency |
 | [`{jsonlite}`](https://cran.r-project.org/web/packages/jsonlite/) | Read and create JSON files |
 | [`{rvest}`](https://rvest.tidyverse.org/) | Web scraping |
-| [`{httr}`](https://httr.r-lib.org/) | Work with HTML data |
+| [`{httr2}`](https://httr2.r-lib.org/) | Modern HTTP client for API access and web requests |
 
 ### Testing & Validation
 
@@ -174,11 +186,14 @@ Columns:
 |   Package   |   Purpose   |
 |-------------|-------------|
 | [`{ggplot2}`](https://ggplot2.tidyverse.org/) | Publication-quality plots and figures |
-| [`{patchwork}`](https://patchwork.data-imaginist.com/) | Compose multiple plots |
-| [`{scales}`](https://scales.r-lib.org/) | Scale functions |
+| [`{patchwork}`](https://patchwork.data-imaginist.com/) | Compose multiple ggplot2 plots into a single layout |
+| [`{scales}`](https://scales.r-lib.org/) | Axis and scale formatting helpers for ggplot2 |
+| [`{showtext}`](https://github.com/yixuan/showtext) | Use system and Google Fonts in R graphics |
 | [`{gt}`](https://gt.rstudio.com/) | Formatted summary tables for reports and documentation |
-| [`{knitr}`](https://yihui.org/knitr/) | Report generation |
-| [`{kableExtra}`](https://haozhu233.github.io/kableExtra/) | Table formatting |
+| [`{gtExtras}`](https://jthomasmock.github.io/gtExtras/) | Additional gt helpers: inline sparklines, color scales, and icons |
+| [`{knitr}`](https://yihui.org/knitr/) | Report generation and dynamic document rendering |
+| [`{kableExtra}`](https://haozhu233.github.io/kableExtra/) | Extended table formatting for knitr output |
+| [`{visNetwork}`](https://datastorm-open.github.io/visNetwork/) | Interactive network diagrams; useful for visualizing pipeline dependencies |
 
 ### Spatial Data (for LULUCF)
 
@@ -292,7 +307,7 @@ renv::restore()
 |------|---------|
 | [Git](https://git-scm.com/) | Version control for all code and documentation |
 | [GitHub](https://github.com/) | Remote repository hosting and code collaboration |
-| [GitHub Issues](https://docs.github.com/en/issues) | Tracking bugs, methodology questions, and deferred decisions; cross-cutting issues filed in `ghg-planning`, source-specific issues in chapter-specific repos |
+| [GitHub Issues](https://docs.github.com/en/issues) | Tracking bugs, methodology questions, and deferred decisions; cross-cutting issues filed in `ghg-roadmap-and-crosscutting`, source-specific issues in chapter-specific repos |
 | [GitHub Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects) | Unified kanban board spanning all inventory repos |
 | [GitHub Actions](https://docs.github.com/en/actions) | Automated workflows; runs `{testthat}` on push and renders this site to GitHub Pages |
 | [GitHub Pages](https://pages.github.com/) | Hosts the rendered version of this planning site |
@@ -560,7 +575,7 @@ ghg-data-hub/
 - **{renv}:** https://rstudio.github.io/renv/
 - **{testthat}:** https://testthat.r-lib.org/
 - **{pointblank}:** https://rich-iannone.github.io/pointblank/
-- **{DuckDB}:** https://duckdb.org/docs/api/r
+- **{duckdb}:** https://duckdb.org/docs/api/r
 - **{quarto}:** https://quarto.org/docs/computations/r.html
 
 **Internal Documentation:**
